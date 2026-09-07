@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/html" charset="iso-8859-1" />
+<title>SudokuNew : validateur de grilles Sudoku et vérificateur d'unicité</title>
+<meta name="description" content="Sudokunew vérifie, résout et valide les grilles de Sudoku. Détectez l’impossibilité ou le défaut d’unicité et comprenez précisément l’origine du problème grâce à un solveur pédagogique."</meta>
+	<script src="sudokusteps.js" type="text/javascript"  language="javascript"></script>    
+	<script src="regroupementenregistrement.js" type="text/javascript"  language="javascript"></script>    
+	<script src="hypotheses.js" type="text/javascript" language="javascript"></script>
+	<script src="variantes.js" type="text/javascript" language="javascript"></script>
+<script src="contraintes.js" type="text/javascript" language="javascript"></script>
+<script src="sudokuinitialisation.js" type="text/javascript"  language="javascript"></script>
+<script src="iniautre.js" type="text/javascript"  language="javascript"></script>
+<script src="Eliminations.js" type="text/javascript" language="javascript"></script>
+<script src="jumeauxtriples.js" type="text/javascript" language="javascript"></script>
+<script src="duoxwing.js" type="text/javascript" language="javascript"></script>
+<script src="isoles.js" type="text/javascript" language="javascript"></script>
+<script src="impressioncalcul.js" type="text/javascript" language="javascript"></script>
+<script src="generation.js" type="text/javascript" language="javascript"></script>
+<script src="choixcalcul.js" type="text/javascript" language="javascript"></script>
+<script src="quadruples.js" type="text/javascript" language="javascript"></script>
+<script src="boucle.js" type="text/javascript" language="javascript"></script>
+<script src="crash.js" type="text/javascript" language="javascript"></script>
+<script src="unicitecarree.js" type="text/javascript" language="javascript"></script>
+<script src="lagriffedutigre.js" type="text/javascript"language="javascript"></script>
+<script src="autresmethodesexotiques.js" type="text/javascript"language="javascript"></script>
+<script src="suitesexotiques.js" type="text/javascript" language="javascript"></script>
+<script src="nouvellesmethodes.js" type="text/javascript" language="javascript"></script>
+<script src="tableauinterne.js" type="text/javascript" language="javascript"></script>
+<script src="gestiongrilles.js" type="text/javascript" language="javascript"></script>
+<script src="datagrilles.js" type="text/javascript" language="javascript"></script>
+<script src="explicationmethodes.js" type="text/javascript" language="javascript"></script>
+<script src="suedecoq.js" type="text/javascript" language="javascript"></script>
+<script src="lattaqueducobra.js" type="text/javascript" language="javascript"></script>
+<script src="deathblossom.js" type="text/javascript" language="javascript"></script>
+<script src="alsxywing.js" type="text/javascript" language="javascript"></script>
+<script src="lapprochedutigre.js" type="text/javascript" language="javascript"></script>
+<script src="nplusun.js" type="text/javascript" language="javascript"></script>
+<script src="swordfish.js" type="text/javascript" language="javascript"></script>
+<script src="jellyfish.js" type="text/javascript" language="javascript"></script>
+<script src="squirmbag.js" type="text/javascript" language="javascript"></script>
+<script src="methodesexotiques.js" type="text/javascript" language="javascript"></script>
+<script src="claviervirtuel.js" type="text/javascript" language="javascript"></script>
+<script src="sudokumethode.js" type="text/javascript" language="javascript"></script>
+<script src="dispatch.js" type="text/javascript" language="javascript"></script>
+<script src="archives.js" type="text/javascript" language="javascript"></script>
+<script src="3D Medusa.js" type="text/javascript" language="javascript"></script>
+<script src="combinaison.js" type="text/javascript" language="javascript"></script>
+<script src="nishio.js" type="text/javascript" language="javascript"></script>
+<script src="ywing.js" type="text/javascript" language="javascript"></script>
+<script src="decodagenmx.js" type="text/javascript" language="javascript"></script>
+<link rel="stylesheet" rev="stylesheet" href="ecrandroit.css" type="text/css" />
+<link rel="stylesheet" rev="stylesheet" href="sudokunew.css" type="text/css" />
+<link rel="stylesheet" rev="stylesheet" href="sudoku.css" type="text/css" />
+<link rel="stylesheet" rev="stylesheet" href="claviervirtuel.css" type="text/css" />
+<link rel="stylesheet" rev="stylesheet" type="text/css" href="print.css" media="print" />
+<script language="javascript">
+    var precheck="Etapes";
+    function changemethods(varhyp) {
+			 document.getElementById(precheck).style.zIndex="0";
+             document.getElementById(precheck).style.opacity="0";
+             document.getElementById(varhyp).style.zIndex="1";
+             document.getElementById(varhyp).style.opacity="1";
+             document.getElementById(varhyp).focus();
+    		 precheck=varhyp;
+    }
+    var premanu="starsmanuel";
+    function changemanuel(varmanu) {
+             document.getElementById(premanu).style.zIndex="0";
+             document.getElementById(premanu).style.opacity="0";
+             document.getElementById(varmanu).style.zIndex="1";
+             document.getElementById(varmanu).style.opacity="1";
+             document.getElementById(varmanu).focus();
+    		 if (varmanu=="starsmanuel"){changemethods("Etapes")}
+//    		 if (varmanu=="starsmanuel"){clearsteps(); chargergrille(); changemethods("Etapes")}
+			 premanu=varmanu;
+    }
+	
+    function versvkb(ob) {
+		if (CLAVIERVIRTUEL) {
+			 document.getElementById("Claviervirtuel").style.zIndex="20";
+    		 document.getElementById("Claviervirtuel").style.opacity="20";
+    		 claviersur(ob)
+		}
+	}
+    function horsvkb() {
+    		 document.getElementById("Claviervirtuel").style.zIndex="0";
+    		 document.getElementById("Claviervirtuel").style.opacity="0";
+    }
+    function valeurreduit() {
+    		 document.getElementById("nbreduit").innerHTML=" Calcul réduit avec un nombre de méthodes les plus simples : "+ORMreduit;
+    		 document.getElementById("Generation").innerHTML="Génération de grilles avec "+MAXCH + " cases";
+    }
+	function validsaisie() {
+			 document.getElementById("methodevariante").innerHTML=scenario+" Etape "+choixetape;
+	}
+    function valeurmet(val) {
+			 return document.getElementById(val).innerHTML.split("-  ")[1];
+    }
+</script>
+</head>
+<body oncontextmenu="return false"  onload="newCard()">
+<h1>Appuyer sur l'icône <img src="images/Aide.png" width="25" height="25"> pour le mode d'emploi ou sur l'icône <img src="images/FAQ.png" width="25" height="25"> pour les questions fréquentes </h1>
+<div>
+	<table style="table-layout:fixed">
+		<thead class="autrecouché">
+		</thead>
+		<tbody class="Mess">
+		</tbody>
+	</table>
+</div>
+
+<div id="starsmanuel" class="autrescouches">
+   <a href="#" class="info" onClick="PrintDiagramme();"><img src="images/Impression.png" class="img img0" alt="Diagramme" /><span>Impression de la grille</span></a>
+&nbsp;<a href="#" class="info" name="stars" onclick="changemanuel(this.name);" ondblclick="putmessage('<u><b>Attention</b></u> : Double clic gauche intempestif');"><img src="images/Validationmethode.png" class="img img6" alt="Résolution par ordinateur" /><span>Passage en mode de création de grille et de résolution par ordinateur<div id="versauto"></div></span></a>
+&nbsp;<a href="#" class="info" onclick="repartition(5);" ondblclick="putmessage('<u><b>Attention</b></u> : Double clic gauche intempestif');"><img src="images/Basculeaffichage.png" class="img img4" alt="Bascule affichage" /><span>Bascule affichage ou pas des chiffres-candidats</span></a> 
+&nbsp;<a href="#" class="info" onclick="repartition(14)" ondblclick="putmessage('<u><b>Attention</b></u> : Double clic gauche intempestif');"><img src="images/sunshutterstock.jpg" class="img img6" alt="Grille en archive" /><span>Appel aléatoire de grille en archive</span></a>
+&nbsp;<a href="#" class="info" onclick="repartition(9);" ondblclick="putmessage('<u><b>Attention</b></u> : Double clic gauche intempestif');"><img src="images/undo.png" class="img img9" alt="Annulation action" /><span>Annulation dernière action manuelle<div id="annulation"></div></span></a>
+&nbsp;<a href="#" class="info" name="Aide" onClick="PrintElem('Lzzlzz');"><img src="images/Aide.png" class="img img0" alt="Aide" /><span>Aide</span></a>
+&nbsp;&nbsp;   <a href="#" class="info" name="FAQ" onClick="PrintElem('FAQfaq');"><img src="images/FAQ.png" alt="FAQ" /><span>FAQ</span></a>
+&nbsp;<a href="#" class="info"><span>Code source</span></a>
+&nbsp;<a href="#" class="info" ondblclick="putmessage('<u><b>Attention</b></u> : Double clic gauche intempestif');" onclick="recalcul=true; repartition(0);"><img src="images/calcul.png" class="img img1" alt="calcul"><span>Calcul</span></a> 
+&nbsp;<a href="#" class="info" name="Methodes" onClick="idliste='Lolo'; changemethods(this.name);"><img src="images/Methodes.png" class="img img0" alt="Methodes" /><span>Méthodes</span></a>
+&nbsp;<a href="#" class="info" onclick="repartition(10);" ondblclick="putmessage('<u><b>Attention</b></u> : Double clic gauche intempestif');"><img src="images/Nouvellegrille.png" class="img img7" alt="Nouvelle grille"/><span>Nouvelle grille</span></a> 
+&nbsp;<a href="#" class="info" onclick="repartition(11);" ondblclick="putmessage('<u><b>Attention</b></u> : Double clic gauche intempestif');"><img src="images/Sauvegarde.png" class="img img5" alt="Sauvegarde"/><span>Sauvegarde grille (titre et contenu)</span></a> 
+&nbsp;<a href="#" class="info" onclick="repartition(12);" ondblclick="putmessage('<u><b>Attention</b></u> : Double clic gauche intempestif');"><img src="images/Suppression.png" class="img img8" alt="Suppression"/><span>Suppression grille en cours</span></a> 
+    <form name="Résolution manuelle">
+    <h1><b>
+    <label for="cars">Niveau de difficulté :</label>
+    <select name="cars" id="cars" onchange="niveaudifficulte(this)">
+      <option value="trèsfacile">Très Facile</option>
+      <option value="facile">Facile</option>
+      <option value="difficile">Difficile</option>
+      <option value="très difficile">Très Difficile</option>
+      <option value="diabolique">Diabolique</option>
+    </select>
+    Assistance à la résolution manuelle<input type="checkbox" class="check1" />
+    </b></h1>
+    </form>
+</div>
+<br><br>
+<div id="stars"  class="autrescouches">
+   <a href="#" class="info" onClick="PrintDiagramme();"><img src="images/Impression.png" class="img img0" alt="Diagramme" /><span>Impression de la grille</span></a>
+&nbsp;&nbsp;&nbsp;&nbsp;   <a href="#" class="info" name="starsmanuel" onclick="changemanuel(this.name); " ondblclick="putmessage('<u><b>Attention</b></u> : Double clic gauche intempestif');"><img src="images/Validationmethode.png" class="img img6" alt="Résolution manuelle" /><span>Passage en mode résolution manuelle<div id="manuelle"></div></span></a>
+&nbsp;&nbsp;&nbsp;&nbsp;   <a href="#" class="info" onclick="repartition(5);" ondblclick="putmessage('<u><b>Attention</b></u> : Double clic gauche intempestif');"><img src="images/Basculeaffichage.png" class="img img4" alt="Bascule affichage" /><span>Bascule affichage</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;   <a href="#" class="info" onclick="repartition(11);" ondblclick="putmessage('<u><b>Attention</b></u> : Double clic gauche intempestif');"><img src="images/Sauvegarde.png" class="img img5" alt="Sauvegarde"/><span>Sauvegarde grille (titre et contenu)</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;   <a href="#" class="info" onclick="repartition(12);" ondblclick="putmessage('<u><b>Attention</b></u> : Double clic gauche intempestif');"><img src="images/Suppression.png" class="img img8" alt="Suppression"/><span>Suppression grille en cours</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;   <a href="#" class="info" ondblclick="putmessage('<u><b>Attention</b></u> : Double clic gauche intempestif');" onclick="repartition(0);"><img src="images/calcul.png" class="img img1" alt="calcul"><span>Calcul</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;   <a href="#" class="info" ondblclick="putmessage('<u><b>Attention</b></u> : Double clic gauche intempestif');" onclick="repartition(1);"><img src="images/calculreduit.png" class="img img2" alt="calcul reduit" /><span><div id="nbreduit"></div></span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;   <a href="#" class="info" ondblclick="putmessage('<u><b>Attention</b></u> : Double clic gauche intempestif');" onclick="repartition(2);"><img src="images/Generation.png" class="img img3" alt="Generation" /><span><div id="Generation"></div></span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;   <a href="#" class="info" onclick="repartition(8);" ondblclick="putmessage('<u><b>Attention</b></u> : Double clic gauche intempestif');"><img src="images/doigt-main.png" class="img img9 imgtest modedeveloppement" alt="Test externe" /><span>Test externe</span></a>
+   <br>
+   <a href="#" class="info" name="Methodes" onClick="idliste='Lolo'; changemethods(this.name);"><img src="images/Methodes.png" class="img img0" alt="Methodes" /><span>Méthodes</span></a>
+&nbsp;&nbsp;&nbsp;&nbsp;   <a href="#" class="info" name="Methodesunicite" onClick="idliste='Lwlw'; changemethods(this.name);"><img src="images/Méthodesunicité.png" class="img img0" alt="Méthodes unicité" /><span>Méthodes unicité</span></a>
+&nbsp;&nbsp;&nbsp;&nbsp;   <a href="#" class="info" name="Etapes" onClick="changemethods(this.name);"><img src="images/Etapes.png" class="img img0" alt="Etapes" /><span>Etapes</span></a>
+&nbsp;&nbsp;&nbsp;&nbsp;   <a href="#" class="info" name="Variantes" onClick="changemethods(this.name);"><img src="images/Variantes.png" class="img img0" alt="Variantes" /><span>Variantes</span></a>
+&nbsp;&nbsp;&nbsp;&nbsp;   <a href="#" class="info" name="Hypotheses" onClick="changemethods(this.name);"><img src="images/Hypotheses.png" class="img img0" alt="Hypothèses" /><span>Hypothèses</span></a>
+&nbsp;&nbsp;&nbsp;&nbsp;   <a href="#" class="info" name="Archives" onClick="validerlistearchives(); changemethods(this.name);"><img src="images/Archivage.png" class="img img0" alt="Archives" /><span>Archives</span></a>
+&nbsp;&nbsp;&nbsp;&nbsp;   <a href="#" class="info" name="Contraintes" onClick="changemethods(this.name);"><img src="images/Contraintes.png" class="img img0" alt="Contraintes" /><span>Filtres et options</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;   <a href="#" class="info" onclick="repartition(13);" ondblclick="putmessage('<u><b>Attention</b></u> : Double clic gauche intempestif');"><img src="images/exit.png" class="img img8" alt="Validation filtres et options"/><span>Validation grille, filtres et options</span></a> 
+</div>
+<br><br><br><br>
+<br><br><br><br>
+<div id="Diagramme">
+	<br><br><br><br><br><br>
+	<form method="get" name="myForm">
+		<h1><b>Archive</b>&nbsp;&nbsp;<input name="nomrevuearchive" size="48" maxlength="48" onfocus="versvkb(this);" class="Titre"/>
+		<h1><b>Grille</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="nomrevue" size="48" maxlength="48" onfocus="versvkb(this);" class="Titre"/></h1>
+	</form>
+<table align="center" id="Lala">
+<tr bgcolor="#FFFFFF">
+<th>&nbsp;&nbsp;</th>
+<th>&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th>&nbsp;&nbsp;&nbsp;&nbsp;B&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th>&nbsp;&nbsp;&nbsp;&nbsp;C&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th>&nbsp;&nbsp;&nbsp;&nbsp;D&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th>&nbsp;&nbsp;&nbsp;&nbsp;E&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th>&nbsp;&nbsp;&nbsp;&nbsp;F&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th>&nbsp;&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th>&nbsp;&nbsp;&nbsp;&nbsp;H&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th>&nbsp;&nbsp;&nbsp;&nbsp;I&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th>&nbsp;</th>
+</tr>
+<tr>
+<th bgcolor="#FFFFFF">1</th>
+<td id="squareA1" class="cellule gauche haut couleur alter" bgcolor="#80FFFF">wloog&nbsp;</td>
+<td id="squareB1" class="cellule haut couleur alter" bgcolor="#80FFFF">&nbsp;</td>
+<td id="squareC1" class="cellule haut alter" bgcolor="#80FFFF">&nbsp;</td>
+<td id="squareD1" class="cellule haut gauche alter">&nbsp;</td>
+<td id="squareE1" class="cellule haut alter">&nbsp;</td>
+<td id="squareF1" class="cellule haut alter">&nbsp;</td>
+<td id="squareG1" bgcolor="#80FFFF" class="cellule gauche haut alter">&nbsp;</td>
+<td id="squareH1" bgcolor="#80FFFF" class="cellule haut alter">&nbsp;</td>
+<td id="squareI1" bgcolor="#80FFFF" class="cellule haut droite">&nbsp;</td>
+<th>&nbsp;</th>
+</tr>
+<tr>
+<th bgcolor="#FFFFFF">2</th>
+<td id="squareA2" bgcolor="#80FFFF" class="cellule gauche alter">&nbsp;</td>
+<td id="squareB2" bgcolor="#80FFFF" class="cellule alter">&nbsp;</td>
+<td id="squareC2" bgcolor="#80FFFF" class="cellule alter">&nbsp;</td>
+<td id="squareD2" class="cellule gauche alter">&nbsp;</td>
+<td id="squareE2" class="cellule alter">&nbsp;</td>
+<td id="squareF2" class="cellule alter">&nbsp;</td>
+<td id="squareG2" bgcolor="#80FFFF" class="cellule gauche alter">&nbsp;</td>
+<td id="squareH2" bgcolor="#80FFFF" class="cellule alter">&nbsp;</td>
+<td id="squareI2" bgcolor="#80FFFF" class="cellule droite alterbis">&nbsp;</td>
+<th>&nbsp;</th>
+</tr>
+<tr>
+<th bgcolor="#FFFFFF">3&nbsp;</th>
+<td id="squareA3" bgcolor="#80FFFF" class="cellule gauche alter">&nbsp;</td>
+<td id="squareB3" bgcolor="#80FFFF" class="cellule alter">&nbsp;</td>
+<td id="squareC3" bgcolor="#80FFFF" class="cellule bas">&nbsp;</td>
+<td id="squareD3" class="cellule gauche alter">&nbsp;</td>
+<td id="squareE3" class="cellule bas alter">&nbsp;</td>
+<td id="squareF3" class="cellule bas">&nbsp;</td>
+<td id="squareG3" bgcolor="#80FFFF" class="cellule gauche alter">&nbsp;</td>
+<td id="squareH3" bgcolor="#80FFFF" class="cellule bas alter">&nbsp;</td>
+<td id="squareI3" bgcolor="#80FFFF" class="cellule droite">&nbsp;</td>
+<th width="10%">&nbsp;</th>
+</tr>
+<tr>
+<th bgcolor="#FFFFFF">4</th>
+<td id="squareA4" class="cellule haut gauche alter">&nbsp;</td>
+<td id="squareB4" class="cellule haut alter">&nbsp;</td>
+<td id="squareC4" class="cellule haut alter">&nbsp;</td>
+<td id="squareD4" bgcolor="#80FFFF" class="cellule gauche haut alter">&nbsp;</td>
+<td id="squareE4" bgcolor="#80FFFF" class="cellule haut alter">&nbsp;</td>
+<td id="squareF4" bgcolor="#80FFFF" class="cellule haut alter">&nbsp;</td>
+<td id="squareG4" class="cellule gauche haut alter">&nbsp;</td>
+<td id="squareH4" class="cellule haut alter">&nbsp;</td>
+<td id="squareI4"  class="cellule droite haut">&nbsp;</td>
+<th width="10%">&nbsp;</th>
+</tr>
+<tr>
+<th bgcolor="#FFFFFF">5</th>
+<td id="squareA5" class="cellule gauche alter">&nbsp;</td>
+<td id="squareB5" class="cellule alter">&nbsp;</td>
+<td id="squareC5" class="cellule droite alter">&nbsp;</td>
+<td id="squareD5" bgcolor="#80FFFF" class="cellule gauche alter">&nbsp;</td>
+<td id="squareE5" bgcolor="#80FFFF" class="cellule alter">&nbsp;</td>
+<td id="squareF5" bgcolor="#80FFFF" class="cellule droite alter">&nbsp;</td>
+<td id="squareG5" class="cellule gauche alter">&nbsp;</td>
+<td id="squareH5" class="cellule alter">&nbsp;</td>
+<td id="squareI5"  class="cellule droite alterbis">&nbsp;</td>
+<th width="10%">&nbsp;</th>
+</tr>
+<tr>
+<th bgcolor="#FFFFFF">6</th>
+<td id="squareA6" class="cellule gauche alter">&nbsp;</td>
+<td id="squareB6" class="cellule bas alter">&nbsp;</td>
+<td id="squareC6" class="cellule bas droite">&nbsp;</td>
+<td id="squareD6" bgcolor="#80FFFF" class="cellule gauche alter">&nbsp;</td>
+<td id="squareE6" bgcolor="#80FFFF" class="cellule bas alter">&nbsp;</td>
+<td id="squareF6" bgcolor="#80FFFF" class="cellule bas droite alter">&nbsp;</td>
+<td id="squareG6" class="cellule gauche alter">&nbsp;</td>
+<td id="squareH6" class="cellule bas alter">&nbsp;</td>
+<td id="squareI6" class="cellule droite">&nbsp;</td>
+<th width="10%">&nbsp;</th>
+</tr>
+<tr>
+<th bgcolor="#FFFFFF">7</th>
+<td id="squareA7" bgcolor="#80FFFF" class="cellule gauche haut alter">&nbsp;</td>
+<td id="squareB7" bgcolor="#80FFFF" class="cellule haut alter">&nbsp;</td>
+<td id="squareC7" bgcolor="#80FFFF" class="cellule haut alter">&nbsp;</td>
+<td id="squareD7" class="cellule gauche haut alter">&nbsp;</td>
+<td id="squareE7" class="cellule haut alter">&nbsp;</td>
+<td id="squareF7" class="cellule haut alter">&nbsp;</td>
+<td id="squareG7" bgcolor="#80FFFF" class="cellule gauche haut alter">&nbsp;</td>
+<td id="squareH7" bgcolor="#80FFFF" class="cellule haut alter">&nbsp;</td>
+<td id="squareI7" bgcolor="#80FFFF" class="cellule haut droite">&nbsp;</td>
+<th width="10%">&nbsp;</th>
+</tr>
+<tr>
+<th bgcolor="#FFFFFF">8</th>
+<td id="squareA8" bgcolor="#80FFFF" class="cellule gauche alter">&nbsp;</td>
+<td id="squareB8" bgcolor="#80FFFF" class="cellule alter">&nbsp;</td>
+<td id="squareC8" bgcolor="#80FFFF" class="cellule droite alter">&nbsp;</td>
+<td id="squareD8" class="cellule gauche alter">&nbsp;</td>
+<td id="squareE8" class="cellule alter">&nbsp;</td>
+<td id="squareF8" class="cellule droite alter">&nbsp;</td>
+<td id="squareG8" bgcolor="#80FFFF" class="cellule gauche alter">&nbsp;</td>
+<td id="squareH8" bgcolor="#80FFFF" class="cellule alter">&nbsp;</td>
+<td id="squareI8" bgcolor="#80FFFF" class="cellule droite alterbis">&nbsp;</td>
+<th width="10%">&nbsp;</th>
+</tr>
+<tr>
+<th bgcolor="#FFFFFF">9</th>
+<td id="squareA9" bgcolor="#80FFFF" class="cellule gauche bas">&nbsp;</td>
+<td id="squareB9" bgcolor="#80FFFF" class="cellule bas alterter">&nbsp;</td>
+<td id="squareC9" bgcolor="#80FFFF" class="cellule bas">&nbsp;</td>
+<td id="squareD9" class="cellule gauche bas">&nbsp;</td>
+<td id="squareE9" class="cellule bas alterter">&nbsp;</td>
+<td id="squareF9" class="cellule bas">&nbsp;</td>
+<td id="squareG9" bgcolor="#80FFFF" class="cellule gauche bas">&nbsp;</td>
+<td id="squareH9" bgcolor="#80FFFF" class="cellule bas alterter">&nbsp;</td>
+<td id="squareI9" bgcolor="#80FFFF" class="cellule bas droite">&nbsp;</td>
+<th width="10%">&nbsp;</th>
+</tr>
+</table>
+<h1><div id="Message" class="Mess">Zone de message</div></h1>
+<div id="Grilles" class="couches" align="center">
+    	 <form>
+				<a href="#" class="infogrille" onclick="griddown();"><img src="images/arrow-down-icon.png" class="img img11" alt="Navigation bas"/><span>Navigation bas</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;				<a href="#" class="infogrille" onclick="gridup();"><img src="images/arrow-up-icon.png" class="img img11" alt="Navigation haut"/><span>Navigation haut</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;				<a href="#" class="infogrille" onClick="PrintEcran(nombregrilles, 'G', titregrille, true);"><img src="images/Impression.png" class="img img11" /><span>Affichage plein écran et impression</span></a>
+   	   	 </form>
+       <table align="center" id="Lili" bgcolor="#80FFFF">
+        	  <tr bgcolor="#FFFF80" align="center" class="Titreliste"><th><u>Liste des grilles</u></th></tr>
+       </table>
+	</div>
+   	<div id="Methodes" class="couches" align="center">
+   		 <form bgcolor="#FFFFFF">
+         		<a href="#" class="infogrille" onclick="methodedown('Lolo');"><img src="images/arrow-down-icon.png" class="img img11" alt="Navigation bas"/><span>Navigation bas</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;				<a href="#" class="infogrille" onclick="methodeup('Lolo');"><img src="images/arrow-up-icon.png" class="img img11" alt="Navigation haut"/><span>Navigation haut</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;   				<a href="#" class="infogrille" onClick="PrintEcran((ORM+1), 'M', 'Liste des méthodes', true);"><img src="images/Impression.png" class="img img11" /><span>Affichage plein écran et impression</span></a>
+   	   	 </form>
+<table align="center" id="Lolo" bgcolor="#FFFF80">
+<tr bgcolor="#FFFF80" align="center" class="Titreliste"><th><u>Liste des Méthodes</u></th></tr>
+<tr><td id="34M">34-  Toutes les méthodes applicables</td></tr>
+<tr><td id="1M"> 1-  Singleton nu (case à un seul chiffre)</td></tr>
+<tr><td id="2M"> 2-  Solo</td></tr>
+<tr><td id="3M"> 3-  Jumeaux</td></tr>
+<tr><td id="4M"> 4-  Duo ou Trio</td></tr>
+<tr><td id="5M"> 5-  Triples</td></tr>
+<tr><td id="6M"> 6-  Quadruples</td></tr>
+<tr><td id="7M"> 7-  Jumeaux Isolés</td></tr>
+<tr><td id="8M"> 8-  Triples isolés</td></tr>
+<tr><td id="9M"> 9-  Gratte-ciel</td></tr>
+<tr><td id="10M">10-  Boucle</td></tr>
+<tr><td id="11M">11-  L'attaque du cobra</td></tr>
+<tr><td id="12M">12-  Sue de Coq (L'arme et la soie)</td></tr>
+<tr><td id="13M">13-  W-Wing (L'aile de l'aigle)</td></tr>
+<tr><td id="14M">14-  Rectangle vide</td></tr>
+<tr><td id="15M">15-  2-String Kite (Cerf-volant)</td></tr>
+<tr><td id="16M">16-  Turbot fish</td></tr>
+<tr><td id="17M">17-  X-Chain (Color trap)</td></tr>
+<tr><td id="18M">18-  XY-Wing (L'aigle et sa proie)</td></tr>
+<tr><td id="19M">19-  Swordfish (l'espadon)</td></tr>
+<tr><td id="20M">20-  Forteresse maxilien</td></tr>
+<tr><td id="21M">21-  X-wing et Finned X-wing</td></tr>
+<tr><td id="22M">22-  XY-Chain (La griffe du tigre)</td></tr>
+<tr><td id="23M">23-  A.I.C.-Chain (l'approche du tigre)</td></tr>
+<tr><td id="24M">24-  Death Blossom</td></tr>
+<tr><td id="25M">25-  ALS-XY-Wing</td></tr>
+<tr><td id="26M">26-  Jellyfish</td></tr>
+<tr><td id="27M">27-  Squirmbag</td></tr>
+<tr><td id="28M">28-  3D Medusa</td></tr>
+<tr><td id="29M">29-  Nishio</td></tr>
+<tr><td id="30M">30-  Y-Wing</td></tr>
+<tr><td id="31M">31-  Chaînage ALS</td></tr>
+<tr><td id="32M">32-  Défaut unicité évité (la danse des espions)</td></tr>
+<tr><td id="33M">33-  Crash unicité</td></tr>
+<tr><td id="0M"> 0-  Crash impossibilité</td></tr>
+</table>
+<script language="javascript">
+		voitcellulemethode('Lolo');
+</script>
+	</div>
+    <div id="Etapes" class="couches" align="center">
+   		  <form>
+   		 		<a href="#" class="infogrille" onclick="stepdown();"><img src="images/arrow-down-icon.png" class="img img11" alt="Navigation bas"/><span>Navigation bas</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;   		 		<a href="#" class="infogrille" onclick="stepup();"><img src="images/arrow-up-icon.png" class="img img11" alt="Navigation haut"/><span>Navigation haut</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;   				<a href="#" class="infogrille" onClick="PrintEcran(listecorr[numerohypothese].split(sep).length, 'E', titrer, ((choixetape>0) || (etapecalcul>0)));"><img src="images/Impression.png" class="img img11" /><span>Affichage plein écran et impression</span></a>
+   		 </form>
+<table align="center" name="nomtab" id="Lulu" bgcolor="#FFFF80">
+<tr bgcolor="#FFFF80"><th>&nbsp;</th></tr>
+<tr bgcolor="#FFFF80" id="Titrestep" align="center" class="Titreliste"><th><u>Liste des étapes</u></th></tr>
+<tr bgcolor="#FFFF80"><th>&nbsp;</th></tr>
+</table>
+	</div>
+   	<div id="Variantes" class="couches" align="center">
+       <form>
+           	<a href="#" class="infogrille" onclick="variantedown();"><img src="images/arrow-down-icon.png" class="img img11" alt="Navigation bas"/><span>Navigation bas</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;           	<a href="#" class="infogrille" onclick="varianteup();"><img src="images/arrow-up-icon.png" class="img img11" alt="Navigation haut"/><span>Navigation haut</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;   			<a href="#" class="infogrille" onClick="PrintEcran(maxvarencours, 'V', titrevariante, (maxvarencours>0));"><img src="images/Impression.png" class="img img11" /><span>Affichage plein écran et impression</span></a>
+&nbsp;&nbsp;&nbsp;&nbsp;			<a href="#" class="infogrille" onclick="enleverougeetchiffre(); affiche(); eliminationglobale(); enleverougeetchiffre(); affiche(); eliminationglobale(); enleverougeetchiffre(); affiche()"><img src="images/coupe rouge.png" class="img img11" alt="Elimination chiffres rouges"/><span>Elimination chiffres rouges</span></a> 
+        </form>
+<table align="center" id="Lzlz"  bgcolor="#FFFF80">
+<tr bgcolor="#FFFF80"><th>&nbsp;</th></tr>
+<tr bgcolor="#FFFF80"  id="Titrevar" align="center" class="Titreliste"><th><b><u>Liste des variantes</u></b></th></tr>
+<tr bgcolor="#FFFF80"><th>&nbsp;</th></tr>
+</table>
+	</div>
+   	<div id="Hypotheses" class="couches" align="center">
+   		  <form>
+   		 		<a href="#" class="infogrille" onclick="hypothesedown();"><img src="images/arrow-down-icon.png" class="img img11" alt="Navigation bas"/><span>Navigation bas</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;   		 		<a href="#" class="infogrille" onclick="hypotheseup();"><img src="images/arrow-up-icon.png" class="img img11" alt="Navigation haut"/><span>Navigation haut</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;   				<a href="#" class="infogrille" onClick="PrintEcran(numerr, 'H', titrehypothese, (numerr>0));"><img src="images/Impression.png" class="img img11" /><span>Affichage plein écran et impression</span></a>
+   		 </form>
+<table align="center" id="Lyly" bgcolor="#FFFF80">
+<tr bgcolor="#FFFF80"><th>&nbsp;</th></tr>
+<tr bgcolor="#FFFF80" align="center" id="Titrehyp" class="Titreliste"><th><u>Liste des hypothèses</u><br><br></th></tr>
+</table>
+<tr bgcolor="#FFFF80"><th>&nbsp;</th></tr>
+	</div>
+    <div id="Archives" class="couches" align="center">
+   		  <form name="myFormarchive">
+   		 		<a href="#" class="infogrille" onclick="archivedown();"><img src="images/arrow-down-icon.png" class="img img11" alt="Navigation bas"/><span>Navigation bas</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;   		 		<a href="#" class="infogrille" onclick="archiveup();"><img src="images/arrow-up-icon.png" class="img img11" alt="Navigation haut"/><span>Navigation haut</span></a> 
+<!--   				<a href="#" class="infogrille" onclick="effacearchive();"><img src="images/Suppression.png" class="img img11" alt="Suppression archive"/><span>Suppression archive</span></a>--> 
+&nbsp;&nbsp;&nbsp;&nbsp;   				<a href="#" class="infogrille" onclick="reinitialisationarchives()"><img src="images/reinitarchive.png" class="img img11" alt="Réinitialisation Générale des archives"/><span>Réinitialisation des archives</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;   				<a href="#" class="infogrille" onClick="PrintEcran(archivesgrilles.length, 'A', titrearchive, true);"><img src="images/Impression.png" class="img img11" /><span>Affichage plein écran et impression</span></a>
+   		 </form>
+<p>
+<table align="center" id="Lxlx" bgcolor="#FFFF80">
+<tr bgcolor="#FFFF80" align="center" class="Titreliste"><th><u>Liste des archives</u><br></th></tr>
+</table>
+	</div>
+
+
+   	<div id="Methodesunicite" class="couches" align="center">
+   		 <form bgcolor="#FFFFFF">
+         		<a href="#" class="infogrille" onclick="methodedown('Lwlw');"><img src="images/arrow-down-icon.png" class="img img11" alt="Navigation bas"/><span>Navigation bas</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;				<a href="#" class="infogrille" onclick="methodeup('Lwlw');"><img src="images/arrow-up-icon.png" class="img img11" alt="Navigation haut"/><span>Navigation haut</span></a> 
+&nbsp;&nbsp;&nbsp;&nbsp;   				<a href="#" class="infogrille" onClick="PrintEcran(ORMUNI, 'B', tradacrit('Liste des méthodes palliant un défaut unicité'), true);"><img src="images/Impression.png" class="img img11" /><span>Affichage plein écran et impression</span></a>
+   	   	 </form>
+<table align="center" id="Lwlw" bgcolor="#FFFF80">
+<tr bgcolor="#FFFF80" align="center" class="Titreliste"><th><u>Liste des Méthodes palliant un défaut d'unicité</u></th></tr>
+<tr><td id="0B"> 0- Toutes les méthodes unicité applicables</td></tr>
+<tr><td id="1B"> 1-  Bug+1</td></tr>
+<tr><td id="2B"> 2-  Solo</td></tr>
+<tr><td id="3B"> 3-  Duo form 1</td></tr>
+<tr><td id="4B"> 4-  Duo form 2</td></tr>
+<tr><td id="5B"> 5-  Duo différents</td></tr>
+<tr><td id="6B"> 6-  Duo diagonale</td></tr>
+<tr><td id="7B"> 7-  LT n°1</td></tr>
+<tr><td id="8B"> 8-  LT n°2</td></tr>
+<tr><td id="9B"> 9-  LT n°3</td></tr>
+<tr><td id="10B">10-  LT n°4</td></tr>
+<tr><td id="11B">11-  LT n°4<sup>bis</sup></td></tr>
+<tr><td id="12B">12-  LT n°5</td></tr>
+<tr><td id="13B">13-  LT n°6</td></tr>
+<tr><td id="14B">14-  Rectangle caché n°1</td></tr>
+<tr><td id="15B">15-  Rectangle caché n°2</td></tr>
+<tr><td id="16B">16-  Rectangle caché n°3</td></tr>
+<tr><td id="17B">17-  Rectangle caché n°4</td></tr>
+<tr><td id="18B">18-  Rectangle caché n°5</td></tr>
+<tr><td id="19B">19-  Rectangle avoidable n°1</td></tr>
+<tr><td id="20B">20-  Rectangle avoidable n°2</td></tr>
+</table>
+</div>	
+	
+   	<div id="Contraintes" class="couches" bgcolor="#FFFF80" align="center">
+<br><br><br><br><br><br>
+<h3 class="jaune" align="center">
+<a href="javascript:print()">Impression de l'écran des Filtres et Options</a>
+<br>
+<div id="Lcontrainte";>
+<div class="jaune" align="center" id="Options">
+<u>Ecran des Filtres et Options</u>
+<br><br>
+<u>Filtres de la génération de grilles</u> :
+<br> 
+Nombre de cases de la grille : 
+<select onchange="changenombrecases(this)">
+<option>16</option><option>17</option><option>18</option><option>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option>25</option><option selected="selected">26</option><option>27</option><option>28</option><option>29</option><option>30</option><option>31</option>
+</select>
+<br>
+Maximum par chiffre par zone : 
+<select onchange="nombremaximumparchiffre(this)">
+<option>3</option><option selected="selected">4</option><option>5</option><option>6</option>
+</select>
+<br>
+Nombre maximum d'échecs : 
+<select onchange="crashautorise(this)">
+<option>2</option><option>5</option><option>10</option><option>30</option><option>40</option><option>50</option><option selected="selected">60</option><option>70</option><option>80</option><option>100</option><option>150</option><option>200</option>
+</select>
+<br>
+<br>
+<u>Filtres du calcul de grilles</u> :
+<br>
+Nombre de méthodes du calcul réduit : 
+<select onchange="maximummethodes(this)">
+<option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option selected="selected">10</option><option>11</option><option>12</option>
+<option>13</option><option>14</option><option>15</option><option>16</option><option>17</option><option>18</option><option>19</option><option>20</option>
+<option>21</option><option>22</option><option>23</option><option>24</option><option>25</option><option>26</option><option>27</option><option>28</option><option>29</option><option>30</option><option>31</option><option>32</option>
+</select>
+<br>
+Longueur de chaîne ALS-Chain : 
+<select onchange="maximumchains(this)">
+<option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option selected="selected">8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+<option>13</option><option>14</option><option>15</option><option>16</option><option>17</option><option>18</option><option>19</option><option>20</option>
+<option>21</option><option>22</option><option>23</option><option>50</option>
+</select>
+<br>
+Nombre de calculs ALS-Chain : 
+<select onchange="maximumiterations(this)">
+<option>2</option><option>6</option><option>10</option><option>15</option><option>25</option><option>50</option><option>100</option><option>130</option><option>200</option><option>300</option><option>380</option><option>500</option>
+<option>1000</option><option>2000</option><option>2300</option><option>5000</option><option>6000</option><option>7000</option><option>9000</option><option>10000</option><option selected="selected">15000</option> <option>25000</option><option>40000</option><option>50000</option><option>100000</option><option>180000</option><option>250900</option><option>300000</option><option>400000</option><option>700000</option><option>1000000</option><option>2000000</option><option>3000000</option><option>5000000</option>
+</select>
+<br><br>
+<u>Options</u> :<br>
+Activation du clavier virtuel<input type="checkbox" />
+<br>
+Autoriser la réinitialisation des archives<input type="checkbox"/>
+<br>
+Mode développement<input type="checkbox"/>
+<br>
+Filtrage des solutions<input type="checkbox"/>
+<br>
+Calcul de grille sélectionnée<input type="checkbox"/>
+<br>
+Nombre de chiffres-candidats affiché
+<select onchange="nombrechiffrescandidats(this)">
+<option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option selected="selected">9</option>
+</select>
+<br><br>
+</div></div>
+	</h3>
+	</div>
+	</div>
+
+   	<div id="FAQ">
+
+<table align="center" id="FAQfaq" style="display:none";>
+<tr bgcolor="#FFFF80"><td><a href="javascript:close()">Retour à l'écran principal</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:print()">Impression de cet écran</a></td></tr>
+<tr bgcolor="#FFFF80"><td><h2><u>Questions fréquentes du programme de sudoku commentées en Intelligence Artificielle et corrigées</u></h2></th></tr> 
+<tr bgcolor="#FFFF80"><td align="left"><h2><u>Résumé</u> :</h2>
+<h3>
+<ol start="1">
+BLOC 1 — PRÉSENTATION ET PHILOSOPHIE DU PROGRAMME 
+<li>Qu'est-ce que Sudokunew et à qui s'adresse-t'il ?</li>
+<li>Quelle est la différence fondamentale entre Sudokunew et un solveur de sudoku classique (traitement de l'unicité) ?</li>
+<li>Sudokunew est-il un programme open source ?</li>
+<li>Combien de temps a nécessité le développement de SudokuNew ?</li>
+<li>Sur quelle adresse internet SudokuNew est-il disponible ?</li>
+BLOC 2 — PRISE EN MAIN ET INTERFACE
+<li>Que se passe-t-il au chargement du programme ?</li>
+<li>Comment résoudre manuellement une grille avec la souris ?</li>
+<li>Comment utiliser SudokuNew sur un écran tactile ?</li>
+<li>Comment afficher les chiffres candidats dans toutes les cases ?</li>
+<li>Comment annuler la dernière opération manuelle ?</li>
+<li>Comment savoir si un chiffre placé manuellement est correct ?</li>
+<li>Que signifie le survol d'une icône avec la souris ?</li>
+BLOC 3 — LE CALCUL PAR ORDINATEUR ET LES MÉTHODES DE RÉSOLUTION
+<li>Commment calculer une grille de sudoku par ordinateur dans SudokuNew ?</li>	
+<li>Quelle est la liste complète des méthodes de résolution implantées ?</li>
+<li>Comment demander à SudokuNew d'appliquer une méthode de résolution, résolvant les cas d’impossibilité ?</li>
+<li>Quelle est la liste complète des méthodes de résolution implantées, évitant les défauts d'unicité ?</li>
+<li>Comment demander à SudokuNew d'appliquer une méthode de résolution, résolvant les cas de défaut d'unicité ?</li>
+<li>Que fait la rubrique "Toutes les méthodes applicables" ?</li>
+<li>Quelle est la différence entre une variante et une variété ?</li>
+<li>Que faire si aucune méthode logique n'est applicable ?</li>
+<li>Qu'est-ce que le Chaînage ALS (méthode 31) et pourquoi est-il particulier ?</li>
+BLOC 4 — GESTION DES GRILLES ET ARCHIVES
+<li>Comment sélectionner une grille dans SudokuNew ?</li>
+<li>Comment enregistrer une grille dans SudokuNew ?</li>
+<li>Peut-on avoir deux grilles avec le même nom ?</li>
+<li>Qu'est-ce que les 4 archives de base ?</li>
+<li>Comment réinitialiser les archives de SudokuNew ?</li>
+<li>SudokuNew peut-il résoudre des grilles issues de journaux ou d'internet ?</li>
+BLOC 5 — GÉNÉRATION DE GRILLES
+<li>SudokuNew peut-il générer des grilles automatiquement ?</li>
+<li>Peut-on choisir le niveau de difficulté d'une grille générée ?</li>
+<li>Combien d'échecs surviennent en moyenne lors d'une génération de grille ?</li>
+<li>Une grille générée fausse est-elle perdue ?</li>
+<li>Quelle procédure suivre après avoir généré une grille ?</li>
+BLOC 6 — IMPOSSIBILITÉ ET DÉFAUT D'UNICITÉ
+<li>Qu'est-ce qu'un "crash pour impossibilité" dans SudokuNew ?</li>
+<li>Qu'est-ce qu'un défaut d'unicité ?</li>
+<li>Qu'est-ce que la corroboration d'un évitement de défaut d'unicité ?</li>
+<li>Que signifient les lettres H, E, U, V dans la signature des hypothèses ?</li>
+BLOC 7 — FILTRES, OPTIONS ET CONFIGURATION
+<li>Quels sont les filtres et options disponibles dans SudokuNew ?</li>
+<li>Comment limiter le nombre de chiffres candidats affichés dans une case ?</li>
+<li>Qu'est-ce que le mode développement de SudokuNew ?</li>
+BLOC 8 — LE CLAVIER VIRTUEL
+<li>SudokuNew dispose-t-il d'un clavier virtuel ?</li>
+<li>À quoi sert le clavier virtuel et quels caractères propose-t-il ?</li>
+<li>Comment fermer le clavier virtuel ?</li>
+BLOC 9 — COMPATIBILITÉ NAVIGATEURS
+<li>Avec quels navigateurs SudokuNew fonctionne-t-il ?</li>
+<li>Les cookies sont-ils utilisés par SudokuNew ?</li>
+BLOC 10 — BUGS ET MESSAGES D'ERREUR
+<li>Quels bugs connus existent dans SudokuNew ?</li>
+<li>Comment signaler ou résoudre un bug dans SudokuNew ?</li>
+<li>Que faire en cas de dépassement de temps (Time Out) lors d'un calcul ?</li>
+BLOC 11 — LES 7 LISTES
+<li>Quelles sont les 7 listes disponibles dans l'espace de résolution par ordinateur ?</li>
+<li>Comment naviguer entre les étapes d'une résolution par ordinateur ?</li>
+BLOC 12 — PRINCIPES DE DÉVELOPPEMENT
+<li>Quels sont les 3 principes de développement respectés dans SudokuNew ?</li>
+<li>Quelle technologie est utilisée pour développer SudokuNew ?</li>
+<li>Qu'est-ce que la résolution avec contraintes mentionnée dans le document ?</li>
+</ol>
+</tr>	
+<br><br><br><br> 
+
+
+
+<tr bgcolor="#FFFF80">
+<br><br><br><br> 
+<td><h2><u><ol start="1"><li>Qu'est-ce que Sudokunew et à qui s'adresse-t'il ?</li></u></h2></td>
+<td><h3>
+SudokuNew est un programme de résolution assistée de Sudoku disponible sur internet, développé en open source après 10 ans de travaux et comptant environ 25 000 lignes de code. Il s'adresse à deux types d'utilisateurs : les joueurs souhaitant résoudre manuellement des grilles avec une assistance pédagogique pas à pas, et les développeurs intéressés par sa structure, annoncée comme pouvant servir de modèle pour la réalisation d'applications sur internet. Il implémente 34 méthodes de résolution numérotées, couvrant du niveau débutant (Singleton nu) au niveau expert (3D Medusa, Death Blossom, Nishio).
+--
+</td>
+<td><h2><u><ol start="2"><li>Quelle est la différence fondamentale entre Sudokunew et un solveur de sudoku classique (traitement de l'unicité) ?</li></u></h2></td>
+<td><h3>
+La différence centrale est la pré-résolution systématique de la grille avant toute interaction utilisateur. Avant de permettre la résolution manuelle, SudokuNew calcule intégralement la grille pour en connaître la solution complète. Ce calcul préparatoire peut durer de quelques secondes (grilles faciles sur ordinateur) à plusieurs minutes (grilles difficiles avec hypothèses), et jusqu'à 30 minutes sur téléphone portable. Cette approche garantit deux choses qu'un solveur classique ne peut pas offrir : la validation fiable de chaque opération manuelle et l'affichage exhaustif de toutes les méthodes réellement applicables à chaque étape, en particulier celles permettant d'éviter dss défauts d'unicité.
+--
+</td>
+<td><h2><u><ol start="3"><li>Sudokunew est-il un programme open source ?</li></u></h2></td>
+<td><h3>
+Oui. SudokuNew est explicitement décrit comme un programme open source, ce qui signifie que son code source est accessible. Le document mentionne qu'il est fait appel à la sagacité de développeurs, qui ont accès au code source, pour résoudre les bugs identifiés non résolus. Le développeur est Raoul SALZBERG.
+--
+</td>
+<td><h2><u><ol start="4"><li>Combien de temps a nécessité le développement de SudokuNew ?</li></u></h2></td>
+<td><h3>
+Le développement de SudokuNew a nécessité 10 ans de travaux, aboutissant à un programme d'environ 25 000 lignes de code. Le document précise que sa structure est maintenant opérationnelle et peut servir de modèle pour la réalisation d'applications sur internet.
+--
+</td>
+<td><h2><u><ol start="5"><li>Sur quelle adresse internet SudokuNew est-il disponible ?</li></u></h2></td>
+<td><h3>
+SudokuNew est disponible à l'adresse www.sudokunew.com. Le document décrit cette application comme un exemple d'application réussie sur internet, écrite en open source, utilisant les outils de base internet HTML, CSS et Javascript.
+--
+</td>
+<td><h2><u><ol start="6"><li>Que se passe-t-il au chargement du programme ?</li></u></h2></td>
+<td><h3>
+Au chargement du programme, une grille très facile, implantée en dur dans le programme, apparaît à l'écran. Son nom et le nom de l'archive qui la contient sont affichés. Le nom de cette grille apparaît aussi en fin de la liste des grilles de cette archive, sous la grille et après la zone de commentaires.
+--
+</td>
+<td><h2><u><ol start="7"><li>Comment résoudre manuellement une grille avec la souris ?</li></u></h2></td>
+<td><h3>
+Déplacer la souris sur une case vierge où l'on pense connaître le chiffre à positionner. Un tableau interne apparaît dans cette case avec les chiffres candidats. Cliquer sur un de ces chiffres pour le sélectionner. C'est la procédure de base pour toute résolution manuelle avec SudokuNew.
+--
+</td>
+<td><h2><u><ol start="8"><li>Comment utiliser SudokuNew sur un écran tactile ?</li></u></h2></td>
+<td><h3>
+Sur un écran tactile, appuyer sur une case de la grille pour faire apparaître le tableau interne de ses chiffres candidats, puis appuyer sur un de ces chiffres pour le sélectionner. Le fonctionnement est identique à la souris, adapté au tactile.
+--
+</td>
+<td><h2><u><ol start="9"><li>Comment afficher les chiffres candidats dans toutes les cases ?</li></u></h2></td>
+<td><h3>
+Cliquer sur l'icône de bascule affichage en haut de l'écran (le troisième à partir de la gauche). La grille affiche alors toutes les cases vierges remplies de leurs chiffres candidats. Un second clic sur cette même icône fait disparaître l'affichage des candidats et revient à la grille normale.
+--
+</td>
+<td><h2><u><ol start="10"><li>Comment annuler la dernière opération manuelle ?</li></u></h2></td>
+<td><h3>
+Cliquer sur l'icône d'annulation en haut de l'écran. Cela annule la dernière opération manuelle effectuée. Il faut ensuite cliquer 2 fois sur l'icône de bascule affichage pour retrouver l'état normal de l'affichage.
+--
+</td>
+<td><h2><u><ol start="11"><li>Comment savoir si un chiffre placé manuellement est correct ?</li></u></h2></td>
+<td><h3>
+SudokuNew ayant calculé la solution complète en amont, il valide chaque chiffre positionné manuellement en temps réel. Si un chiffre est correct, le programme l'indique avec le symbole "!" en fin de zone de message. Cette validation immédiate est l'un des avantages majeurs de SudokuNew par rapport aux solveurs classiques. Ceci n’est possible que si l’utilisateur a validé l’aide manuelle dans la liste des filtres et options.
+--
+</td>
+<td><h2><u><ol start="12"><li>Que signifie le survol d'une icône avec la souris ?</li></u></h2></td>
+<td><h3>
+Lors du survol d'une icône, celle-ci se dilate et un message en jaune apparaît en haut et à gauche de l'écran, indiquant la signification de cette icône. Il faut cliquer pour activer l'icône quand ce message jaune apparaît.
+--
+</td>
+<td><h2><u><ol start="13"><li>Commment calculer une grille de sudoku par ordinateur dans SudokuNew ?</li></u></h2></td>
+<td><h3>
+L’écran initial apparaissant lors du chargement du programme est dédié à une résolution manuelle de la grille de sudoku.
+Mais dans cet écran existe une icône permettant le calcul de la grille par l’ordinateur, la septième à partir de la gauche. En cliquant sur cette icône, le calcul s’effectue, en fournissant, sous la grille, la liste des étapes pour y parvenir
+Pour une résolution automatique détaillée par ordinateur, il faut passer à l’écran dédié à une résolution par ordinateur de la grille. Pour cela, cliquer sur l’icône de basculement dans la liste des icônes, la deuxième à gauche en haut de l’écran.
+Dans ce nouvel écran , il existe 2 lignes d’icônes en haut de l’écran. permettant le calcul de la grille par ordinateur. Sur la première ligne, les icônes en position 5 et 6 à partir de la gauche permettent le calcul de la grille par ordinateur. La première est identique à celle de l’écran manuel. La seconde permet un calcul simplifié, en n’utilisant que les méthodes de résolution les plus simples.
+--
+</td>
+<td><h2><u><ol start="14"><li>Quelle est la liste complète des méthodes de résolution implantées ?</li></u></h2></td>
+<td><h3>
+Dans le nouvel écran dédié au calcul par ordinateur, il  existe au début de la deuxième ligne d’icônes en haut de l”écran, une icône dédiée à sélectionner la liste des méthodes de résolution gérant les impossibilités; il faut cliquer dessus pour faire apparaître, sous la grille, la liste de ces méthodes de résolution.
+SudokuNew implante 34 méthodes de résolution numérotées de 0 à 34. Elles couvrent l'ensemble du spectre, des méthodes élémentaires (Singleton nu, Solo) aux méthodes expertes (3D Medusa, Death Blossom, Nishio, AIC-Chain). Des méthodes portent des noms imagés : L'attaque du cobra, L'aigle et sa proie, La griffe du tigre, L'approche du tigre.
+0 - Crash impossibilité 1 - Singleton nu (case à un seul chiffre) 2 - Solo 3 - Jumeaux 4 - Duo ou Trio 5 - Triples 6 - Quadruples 7 - Jumeaux isolés 8 - Triples isolés 9 - Gratte-ciel 10 - Boucle 11 - L'attaque du cobra 12 - Sue de Coq (L'arme et la soie) 13 - W-Wing (L'aile de l'aigle) 14 - Rectangle vide 15 - 2-String Kite (Cerf-volant) 16 - Turbot fish 17 - X-Chain (Color trap) 18 - XY-Wing (L'aigle et sa proie) 19 - Swordfish (l'espadon) 20 - Forteresse maxilien 21 - X-wing et Finned X-wing 22 - XY-Chain (La griffe du tigre) 23 - A.I.C.-Chain (l'approche du tigre) 24 - Death Blossom 25 - ALS-XY-Wing 26 - Jellyfish 27 - Squirmbag 28 - 3D Medusa 29 - Nishio 30 - Y-Wing 31 - Chaînage ALS 32 - Crash unicité 34 - Toutes les méthodes applicables
+--
+</td>
+<td><h2><u><ol start="15"><li>Comment demander à SudokuNew d'appliquer une méthode de résolution, résolvant les cas d’impossibilité ?</li></u></h2></td>
+<td><h3>
+Cliquer, dans l’écran de résolution par ordinateur, sur l'icône d’affichage des méthodes de résolution (la première de la deuxième ligne d’icônes), gérant les impossibilités, en haut de l'écran, puis choisir une méthode dans la liste correspondante qui apparaît sous le message sous la grille.
+Une liste des différentes variantes pour la méthode de résolution choisie apparaît sous la grille. Cliquer sur une de ces variantes pour faire apparaître son effet.
+La sélection d’une variante, dans la liste  des variantes qui apparaît sous la grille, fait apparaître en rouge tous les chiffres éliminés par cette variante de la méthode et, sur fond vert ou orange, les chiffres ayant contribué à trouver cette solution efficace. Sous la grille est détaillée l’explication particulière de la méthode appliquée, puis le principe général de cette méthode.
+Si la méthode est non applicable, la liste des variantes n'apparaît pas et un message en indique la raison.
+En haut de cette liste de variantes, apparaît, en première ligne, une ligne “Toutes les variantes au nombre de --”, qui, en cliquant dessus, fait apparaître l’effet conjoint de toutes ces variantes.
+En cliquant sur la dernière des quatre icônes en haut de cette liste, on fait disparaître tous les chiffres en rouge, indiquant l’effet global de l’application de toutes les variantes de cette méthode.
+Attention : pour sélectionner une autre méthode, il faut d'abord resélectionner la liste des méthodes avant de choisir une nouvelle méthode.
+Il existe une autre liste de méthodes de résolution, celle correspondant aux défauts d’unicité (la deuxième icône de la deuxième ligne des icônes en haut de l’écran). Cliquer sur cette icône pour faire apparaître cette liste sous la grille. Sa gestion est la même que pour la liste des méthodes de résolution pour impossibilité. 
+--
+</td>
+<td><h2><u><ol start="16"><li>Quelle est la liste complète des méthodes de résolution implantées, évitant les défauts d'unicité ?</li></u></h2></td>
+<td><h3>
+Dans le nouvel écran dédié au calcul par ordinateur, il  existe au début de la deuxième ligne d’icônes en haut de l”écran, une icône dédiée à sélectionner la liste des méthodes de résolution gérant les impossibilités; il faut cliquer dessus pour faire apparaître, sous la grille, la liste de ces méthodes de résolution.
+SudokuNew implante 34 méthodes de résolution numérotées de 0 à 34. Elles couvrent l'ensemble du spectre, des méthodes élémentaires (Singleton nu, Solo) aux méthodes expertes (3D Medusa, Death Blossom, Nishio, AIC-Chain). Des méthodes portent des noms imagés : L'attaque du cobra, L'aigle et sa proie, La griffe du tigre, L'approche du tigre.
+0 - Crash impossibilité 1 - Singleton nu (case à un seul chiffre) 2 - Solo 3 - Jumeaux 4 - Duo ou Trio 5 - Triples 6 - Quadruples 7 - Jumeaux isolés 8 - Triples isolés 9 - Gratte-ciel 10 - Boucle 11 - L'attaque du cobra 12 - Sue de Coq (L'arme et la soie) 13 - W-Wing (L'aile de l'aigle) 14 - Rectangle vide 15 - 2-String Kite (Cerf-volant) 16 - Turbot fish 17 - X-Chain (Color trap) 18 - XY-Wing (L'aigle et sa proie) 19 - Swordfish (l'espadon) 20 - Forteresse maxilien 21 - X-wing et Finned X-wing 22 - XY-Chain (La griffe du tigre) 23 - A.I.C.-Chain (l'approche du tigre) 24 - Death Blossom 25 - ALS-XY-Wing 26 - Jellyfish 27 - Squirmbag 28 - 3D Medusa 29 - Nishio 30 - Y-Wing 31 - Chaînage ALS 32 - Crash unicité 34 - Toutes les méthodes applicables
+--
+</td>
+<td><h2><u><ol start="17"><li>Comment demander à SudokuNew d'appliquer une méthode de résolution, résolvant les cas de défaut d'unicité ?</li></u></h2></td>
+<td><h3>
+Cliquer, dans l’écran de résolution par ordinateur, sur l'icône d’affichage des méthodes de résolution (la première de la deuxième ligne d’icônes), gérant les impossibilités, en haut de l'écran, puis choisir une méthode dans la liste correspondante qui apparaît sous le message sous la grille.
+Une liste des différentes variantes pour la méthode de résolution choisie apparaît sous la grille. Cliquer sur une de ces variantes pour faire apparaître son effet.
+La sélection d’une variante, dans la liste  des variantes qui apparaît sous la grille, fait apparaître en rouge tous les chiffres éliminés par cette variante de la méthode et, sur fond vert ou orange, les chiffres ayant contribué à trouver cette solution efficace. Sous la grille est détaillée l’explication particulière de la méthode appliquée, puis le principe général de cette méthode.
+Si la méthode est non applicable, la liste des variantes n'apparaît pas et un message en indique la raison.
+En haut de cette liste de variantes, apparaît, en première ligne, une ligne “Toutes les variantes au nombre de --”, qui, en cliquant dessus, fait apparaître l’effet conjoint de toutes ces variantes.
+En cliquant sur la dernière des quatre icônes en haut de cette liste, on fait disparaître tous les chiffres en rouge, indiquant l’effet global de l’application de toutes les variantes de cette méthode.
+Attention : pour sélectionner une autre méthode, il faut d'abord resélectionner la liste des méthodes avant de choisir une nouvelle méthode.
+Il existe une autre liste de méthodes de résolution, celle correspondant aux défauts d’unicité (la deuxième icône de la deuxième ligne des icônes en haut de l’écran). Cliquer sur cette icône pour faire apparaître cette liste sous la grille. Sa gestion est la même que pour la liste des méthodes de résolution pour impossibilité. 
+--
+</td>
+<td><h2><u><ol start="18"><li>Que fait la rubrique "Toutes les méthodes applicables" ?</li></u></h2></td>
+<td><h3>
+En choisissant cette rubrique en première ligne dans la liste des méthodes, l'ordinateur calcule toutes les méthodes efficaces et affiche en rouge tous les chiffres candidats éliminés par ces méthodes.
+Il indique aussi la liste de l’ensemble de toutes les variantes de toutes ces méthodes efficaces.
+En cliquant sur la dernière des 4 icônes en haut de cette liste, on fait disparaître tous les chiffres en rouge, indiquant l’effet global de l’application de toutes ces méthodes.  Parfois, cela résoud entièrement la grille d’un seul coup.
+Attention : ce calcul peut être long.
+--
+</td>
+<td><h2><u><ol start="19"><li>Quelle est la différence entre une variante et une variété ?</li></u></h2></td>
+<td><h3>
+Une variante est une des solutions concrètes obtenues avec la méthode sélectionnée pour la grille en cours. Une variété est une sous-méthode de la méthode. Par exemple, la méthode AIC-Chain possède 4 variétés : AIC-Type I, AIC-Type II, AIC-loop discontinu et AIC-loop continu. Pour certaines méthodes, il existe même des combinaisons de variétés.
+--
+</td>
+<td><h2><u><ol start="20"><li>Que faire si aucune méthode logique n'est applicable ?</li></u></h2></td>
+<td><h3>
+Si aucune méthode n'est applicable, il est nécessaire de faire une hypothèse aléatoire. Si cette hypothèse n'aboutit pas, il faut la corriger, ce qui peut prendre beaucoup de temps car il est parfois nécessaire de faire des hypothèses en cascade. L'ordinateur sait calculer automatiquement une grille valide même avec hypothèses, y compris les grilles connues comme les plus difficiles du monde comme la grille dénommée “Al Escargot”, ou encore “Blonde Platine”, “Easter Monster 1”, “Easter Monster 2”, "Arto Inkala".
+Rappel : une grille de sudoku valide possède une solution et une seule.
+--
+</td>
+<td><h2><u><ol start="21"><li>Qu'est-ce que le Chaînage ALS (méthode 31) et pourquoi est-il particulier ?</li></u></h2></td>
+<td><h3>
+Le Chaînage ALS est décrit comme une méthode lourde, parfois très longue à calculer. Il est recommandé de réduire son utilisation en diminuant le nombre de calculs de cette méthode dans l'écran des Filtres et Options lorsque les temps de calcul deviennent excessifs.
+--
+</td>
+<td><h2><u><ol start="22"><li>Comment sélectionner une grille dans SudokuNew ?</li></u></h2></td>
+<td><h3>
+La sélection d'une grille se fait par clic sur son nom dans la liste des grilles d'une archive.
+Pour trouver cette grille, il faut au préalable sélectionner l’archive dans laquelle elle se trouve. Pour cela, il faut, dans l’écran de résolution par ordinateur, celui possédant 2 lignes d’icônes en haut de l’écran, cliquer sur l’icône de sélection d’archives, la sixième de la deuxième ligne d’icônes. Cela fait apparaître, sous la grille, la liste des archives. Dans cette liste, cliquer sur l’archive contenant la grille de sudoku recherchée, puis, sur cette liste qui apparaît, cliquer sur cette grille.
+Cela entraîne l'affichage de son contenu dans le diagramme, son identification dans la zone de titre et la zone de messages, et l'éclairage en blanc de son nom dans la liste. La liste des étapes apparaît avec une seule étape dite 0 avec la mention "Grille initiale".
+--
+</td>
+<td><h2><u><ol start="23"><li>Comment enregistrer une grille dans SudokuNew ?</li></u></h2></td>
+<td><h3>
+L'enregistrement se fait en cliquant sur l'icône d'enregistrement (en forme de disquette) en haut de l'écran. Si le nom affiché de l'archive fait partie des 4 archives de base, l'enregistrement s'effectue dans une archive personnelle automatique appelée "Nouvelle archive". Sinon, l'enregistrement se fait dans l'archive affichée, ajoutée en fin de liste des grilles.
+--
+</td>
+<td><h2><u><ol start="24"><li>Peut-on avoir deux grilles avec le même nom ?</li></u></h2></td>
+<td><h3>
+Oui, techniquement c'est possible : si le nom d'une grille existe déjà, la nouvelle grille s'installe quand même en fin de liste, ce qui crée 2 grilles différentes avec le même nom dans la même archive. Le document précise explicitement que ce n'est pas recommandé.
+--
+</td>
+<td><h2><u><ol start="25"><li>Qu'est-ce que les 4 archives de base ?</li></u></h2></td>
+<td><h3>
+SudokuNew dispose de 4 archives de base intégrées au programme. Il n'est pas possible d'enregistrer directement dans ces 4 archives : une archive auxiliaire appelée "Nouvelle archive" est automatiquement créée pour cela. Ces 4 archives constituent la base de référence du programme, et réinitialiser le programme revient à ne conserver que ces 4 archives.
+Ces 4 archives de base, numérotées de 0 à 3, sont les suivantes :
+    • 20 grilles de la littérature de sudoku, dont les plus difficiles connues
+    • 73 grilles difficiles générées avec le programme Sudokunew
+    • 50 grilles faciles générées avec le programme Sudokunew
+    • 9 grilles utilisant la méthode de résolution AIC
+Les archives personnelles de l’utilisateur, créées ou générées, s’aligneront ensuite, à partir du numéro 4. Ces archives  personnelles, tout comme les grilles qu’elles contiennent, sont modifiables ou effaçables, contrairement aux 4 archives de base et aux grilles qu’elles contiennent..
+--
+</td>
+<td><h2><u><ol start="26"><li>Comment réinitialiser les archives de SudokuNew ?</li></u></h2></td>
+<td><h3>
+La réinitialisation des archives s'effectue via une option dans l'écran des Filtres et Options. Elle doit être autorisée en cochant l'option correspondante. Cette réinitialisation ramène le programme à son état initial avec uniquement les 4 archives de base, supprimant toutes les archives personnelles créées.
+L’icône de réinitialisation générale des archives se trouve en haut de la liste des archives, la dernière à droite. Un message demande la confirmation, car cela fait disparaître toutes les grilles personnelles créées jusque là.
+--
+</td>
+<td><h2><u><ol start="27"><li>SudokuNew peut-il résoudre des grilles issues de journaux ou d'internet ?</li></u></h2></td>
+<td><h3>
+Oui. SudokuNew permet de créer manuellement une grille à partir d'une grille trouvée dans un journal ou sur internet, puis de la résoudre manuellement avec assistance ou automatiquement par ordinateur. Le document signale même que certaines grilles publiées dans des journaux se révèlent fausses pour défaut d'unicité — SudokuNew est capable de détecter ces cas.
+--
+</td>
+<td><h2><u><ol start="28"><li>SudokuNew peut-il générer des grilles automatiquement ?</li></u></h2></td>
+<td><h3>
+Oui. SudokuNew dispose d'un espace dédié à la génération automatique de grilles. La génération se lance en cliquant sur l'icône correspondante. Cette opération est longue et peut provoquer un dépassement de temps système dit "Time Out" : dans ce cas, le document recommande de laisser continuer le calcul jusqu'à son terme sans intervenir.
+--
+</td>
+<td><h2><u><ol start="29"><li>Peut-on choisir le niveau de difficulté d'une grille générée ?</li></u></h2></td>
+<td><h3>
+Non. Le document indique explicitement qu'il n'est pas possible de déterminer à priori si la grille générée sera facile, difficile ou très difficile. En moyenne, le programme génère 3 fois plus de grilles faciles que de grilles difficiles.
+--
+</td>
+<td><h2><u><ol start="30"><li>Combien d'échecs surviennent en moyenne lors d'une génération de grille ?</li></u></h2></td>
+<td><h3>
+En moyenne, il faut 20 échecs pour trouver une grille générée valide. Par défaut, le nombre d'échecs est limité à 60 (valeur modifiable dans les Filtres et Options). Cette limite est atteinte en moyenne une fois sur deux tentatives. La grande majorité des échecs est due à une impossibilité, quelques cas étant dus à un défaut d'unicité.
+--
+</td>
+<td><h2><u><ol start="31"><li>Une grille générée fausse est-elle perdue ?</li></u></h2></td>
+<td><h3>
+Non. Même si la grille finale est fausse, elle est enregistrée et peut être analysée. Le document précise que c'est une source très intéressante de cas d'études, notamment pour comprendre les mécanismes d'impossibilité et de défaut d'unicité.
+--
+</td>
+<td><h2><u><ol start="32"><li>Quelle procédure suivre après avoir généré une grille ?</li></u></h2></td>
+<td><h3>
+    1. Vérifier que le message indique que la grille est correcte.
+    2. Renseigner le titre de la grille en remplaçant "Grille générée" dans la zone de titre.
+    3. Cliquer sur l'icône d'enregistrement (disquette).
+    4. Cliquer sur l'archive de cette grille dans la liste des archives.
+    5. Sélectionner la nouvelle grille en cliquant sur son nom.
+    6. Lancer un calcul pour vérifier la grille et inspecter les étapes.
+--
+</td>
+<td><h2><u><ol start="33"><li>Qu'est-ce qu'un "crash pour impossibilité" dans SudokuNew ?</li></u></h2></td>
+<td><h3>
+Un crash pour impossibilité survient lorsque la grille en cours atteint un état où aucune solution n'est possible comme, par exemple, une case se retrouve sans aucun chiffre candidat valide. SudokuNew identifie 5 types de crashs pour impossibilité (rubrique 0 de la liste des méthodes). Ces crashs peuvent survenir lors d'hypothèses incorrectes ou lors de la génération de grilles.
+--
+</td>
+<td><h2><u><ol start="34"><li>Qu'est-ce qu'un défaut d'unicité ?</li></u></h2></td>
+<td><h3>
+Un défaut d'unicité survient lorsqu'une grille de Sudoku possède plusieurs solutions valides au lieu d'une seule. Une grille valide de Sudoku doit avoir exactement une solution unique. SudokuNew dispose de méthodes spécifiques pour détecter et éviter les défauts d'unicité (rubrique 32 de la liste). Le document mentionne qu'il en existerait plus de 20 types. Son implantation a été effectuée avec la liste des méthodes pour pallier un défaut d'unicité, dont l'icône est la deuxième de la deuxième ligne d'icônes en haut de l'écran dans l'écran de calcul par ordinateur..
+--
+</td>
+<td><h2><u><ol start="35"><li>Qu'est-ce que la corroboration d'un évitement de défaut d'unicité ?</li></u></h2></td>
+<td><h3>
+La corroboration est une vérification supplémentaire nécessaire dans certains cas d'évitement de défaut d'unicité. Elle consiste à s'assurer que l'un des chiffres d'une case du rectangle ne rend pas une autre case du rectangle assujettie à un des 2 chiffres du rectangle. Le document signale que cette question est méconnue et que des grilles publiées dans des journaux se révèlent fausses faute d'en avoir tenu compte.
+--
+</td>
+<td><h2><u><ol start="36"><li>Que signifient les lettres H, E, U, V dans la signature des hypothèses ?</li></u></h2></td>
+<td><h3>
+Ces lettres apparaissent dans le résultat d'un calcul lorsque des hypothèses ont été nécessaires : H = Hypothèse normale E = Hypothèse avortée (cas des hypothèses en cascade) U = Défaut d'unicité rectangle évité V = Défaut d'unicité bug+1 évité
+--
+</td>
+<td><h2><u><ol start="37"><li>Quels sont les filtres et options disponibles dans SudokuNew ?</li></u></h2></td>
+<td><h3>
+L'écran des Filtres et Options contient :
+    • 3 filtres de génération de grilles
+    • 2 filtres de calcul
+    • 4 options : activation du clavier virtuel, autorisation de réinitialiser les archives, travail en mode développement, nombre de chiffres candidats affichés dans une case. La validation se fait en cliquant sur l'icône en forme de chapeau. Attention : il faut quitter puis recharger le programme pour que les modifications soient actives.
+--
+</td>
+<td><h2><u><ol start="38"><li>Comment limiter le nombre de chiffres candidats affichés dans une case ?</li></u></h2></td>
+<td><h3>
+Une option dans l'écran des Filtres et Options permet de définir le nombre maximum de chiffres candidats pouvant être visualisés dans une case. L'icône de bascule affichage ne fera alors apparaître que les cases ayant un nombre de chiffres candidats inférieur au nombre défini.
+--
+</td>
+<td><h2><u><ol start="39"><li>Qu'est-ce que le mode développement de SudokuNew ?</li></u></h2></td>
+<td><h3>
+Le mode développement est une option dans l'écran des Filtres et Options. Si cette option est validée, il est possible de modifier le code source grâce à une icône supplémentaire, pour démarrer un calcul sur une portion de code externe à tester. Cette icône est inhibée en mode production. La validation du mode développement n'est effective qu'en quittant le programme puis en le rechargeant.
+--
+</td>
+<td><h2><u><ol start="40"><li>SudokuNew dispose-t-il d'un clavier virtuel ?</li></u></h2></td>
+<td><h3>
+Oui. Un clavier virtuel a été implanté dans le programme. Il est activé en cochant l'option "Activation du clavier virtuel" dans l'écran des Filtres et Options, puis en quittant et rechargeant le programme. Ce clavier virtuel n'apparaît pleinement qu'en mode plein écran.
+--
+</td>
+<td><h2><u><ol start="41"><li>À quoi sert le clavier virtuel et quels caractères propose-t-il ?</li></u></h2></td>
+<td><h3>
+Le clavier virtuel permet de saisir le nom d'une grille ou le nom d'une archive avec des caractères exotiques impossibles à saisir avec un clavier physique. Il propose : caractères standards en majuscules et minuscules, caractères grecs, notes de musique, caractères informatiques, caractères de business, émoticons, motifs de cartes à jouer. Le document mentionne la possibilité de l'enrichir avec des caractères de différents pays (chinois, japonais, arabe, hébreu, etc.).
+--
+</td>
+<td><h2><u><ol start="42"><li>Comment fermer le clavier virtuel ?</li></u></h2></td>
+<td><h3>
+En fin de saisie, il faut fermer la fenêtre du clavier virtuel en cliquant sur le ruban rouge intitulé "Exit clavier virtuel" en haut de cette fenêtre.
+--
+</td>
+<td><h2><u><ol start="43"><li>Avec quels navigateurs SudokuNew fonctionne-t-il ?</li></u></h2></td>
+<td><h3>
+SudokuNew fonctionne correctement avec Firefox (Mozilla) et Chrome (Google). Il fonctionne aussi avec Opera (norvégien) et Safari (Apple). Il fonctionne même avec les 2 navigateurs Microsoft : Internet Explorer 11 et Edge. Ces navigateurs supportent le Web Storage, nouveau moyen de stockage côté client remplaçant les cookies. Note : Internet Explorer 11 n'est plus supporté par Microsoft et est remplacé par Edge.
+--
+</td>
+<td><h2><u><ol start="44"><li>Les cookies sont-ils utilisés par SudokuNew ?</li></u></h2></td>
+<td><h3>
+Non. SudokuNew utilise le Web Storage (aussi appelé webstorage), qui est le nouveau moyen de stockage de données côté client, remplaçant les cookies de manière plus performante. Le document précise que les cookies ne sont plus acceptés par les navigateurs Chrome et Opera. De même, les cadres ("frames") sont considérés comme obsolètes par la plupart des navigateurs.
+--
+</td>
+<td><h2><u><ol start="45"><li>Quels bugs connus existent dans SudokuNew ?</li></u></h2></td>
+<td><h3>
+Le document identifie 2 cas incertains :
+    1. Si l'application d'une méthode fait apparaître une solution erronée (notamment pour certaines méthodes d'évitement de défaut d'unicité), le palliatif est de considérer que la grille est fausse.
+    2. Si un plantage occasionnel persiste, le palliatif consiste à réinitialiser le programme en ne conservant que les 4 archives de base. Le document précise qu'il n'existe plus de plantage connu au moment de la rédaction.
+--
+</td>
+<td><h2><u><ol start="46"><li>Comment signaler ou résoudre un bug dans SudokuNew ?</li></u></h2></td>
+<td><h3>
+Le programme étant open source, il est fait appel à la sagacité des développeurs ayant accès au code source. La difficulté est que ces bugs n'apparaissent souvent que de manière occasionnelle et aléatoire. Pour les résoudre, il faut avoir conservé une trace de la grille qui a occasionné le bug, afin de reproduire la procédure fautive et tenter de la corriger.
+--
+</td>
+<td><h2><u><ol start="47"><li>Que faire en cas de dépassement de temps (Time Out) lors d'un calcul ?</li></u></h2></td>
+<td><h3>
+Le document recommande de laisser continuer le calcul jusqu'à son terme sans rien faire. Les dépassements de temps surviennent principalement lors de la génération de grilles ou lors de l'utilisation de méthodes récursives complexes. Certaines méthodes utilisent des fonctions récursives (fonctions s'appelant elles-mêmes) et une récursivité trop profonde peut générer une saturation de pile.
+--
+</td>
+<td><h2><u><ol start="48"><li>Quelles sont les 7 listes disponibles dans l'espace de résolution par ordinateur ?</li></u></h2></td>
+<td><h3>
+Les 7 listes sont : Méthodes, Méthodes unicité, Etapes, Variantes, Hypothèses, Archives, Grilles. Chaque liste dispose d'une ligne d'icônes au-dessus avec : navigation bas, navigation haut, affichage plein écran pour impression.
+--
+</td>
+<td><h2><u><ol start="49"><li>Comment naviguer entre les étapes d'une résolution par ordinateur ?</li></u></h2></td>
+<td><h3>
+La liste des Etapes permet de naviguer entre toutes les étapes du calcul. La sélection d'une étape affiche la grille à cet état, avec dans la zone de messages : l'étape en cours, les explications spécifique et générale de la méthode utilisée. Une grille sauvegardée à une étape intermédiaire est copiée avec son nom auquel est ajouté le numéro de l'étape correspondant.
+--
+</td>
+<td><h2><u><ol start="50"><li>Quels sont les 3 principes de développement respectés dans SudokuNew ?</li></u></h2></td>
+<td><h3>
+Le document cite 3 principes devant être respectés dans le développement d'une telle application :
+    1. Avoir un code propre dit DRY (Don't Repeat Yourself), c'est-à-dire ne pas se répéter dans le code.
+    2. Actualiser les images d'exemples au fur et à mesure du développement.
+    3. Nettoyer régulièrement les portions de code devenues obsolètes, dites "code mort".
+--
+</td>
+<td><h2><u><ol start="51"><li>Quelle technologie est utilisée pour développer SudokuNew ?</li></u></h2></td>
+<td><h3>
+SudokuNew est développé avec les outils de base internet : HTML, CSS et Javascript. Le document précise que ce choix technologique simple et ouvert en fait un exemple pouvant servir de modèle pour le développement d'autres applications sur internet.
+Aucun framework n’est utilisé. Un framework est une surcouche logicielle appliquée sur le langage de base internet, et est surtout utilisé dans les banques.
+Le fait de travailler sur les langages de base internet permet de bénéficier de l’aide sur le web des millions de développeurs travaillant ainsi dans le monde.
+--
+</td>
+<td><h2><u><ol start="52"<li>Qu'est-ce que la résolution avec contraintes mentionnée dans le document ?</li></u></h2></td>
+<td><h3>
+La résolution avec contraintes est une fonctionnalité implantée mais suspendue dans la version actuelle de SudokuNew. Le document précise que "sa résolution complète n'étant pas terminée, cette partie de programme a été suspendue pour l'instant". Il s'agit vraisemblablement d'une approche permettant d'appliquer des contraintes supplémentaires au-delà des règles standard du Sudoku.
+Exemples de contrainte : pas de chiffres consécutifs dans la grille, zones particulières de 9 cases respectant la règle de contenir les chiffres de 1 à 9, grille étendue autre que 9x9, etc..
+</td>
+</tr>
+
+</table>
+</div>
+	
+
+
+   	<div id="Aide">
+<table align="center" id="Lzzlzz" style="display:none";>
+<tr bgcolor="#FFFF80"><td><a href="javascript:close()"><h1>Retour à l'écran principal</a>
+<a href="javascript:print()">Impression de cet écran</h1></a></td></tr>
+<tr bgcolor="#FFFF80"><td><h1><u>Aide du programme de sudoku</big></u></h1></th></tr> 
+<tr bgcolor="#FFFF80"><td align="left"><h1><u>Résumé</u> :</h1>
+<h2>
+<ol start="0">
+<li>Qu'est-ce que c'est sudokunew</li>
+<li>Comment sudokunew valide irréfutablement une grille</li>
+<li>La puissance du solveur : démonstration sur une grille publiée</li>
+<li>La résolution de grille manuelle avec cette application de sudoku (sélection et désélection, effacement)</li>
+<li>La résolution de grille par ordinateur avec cette application de sudoku</li>
+<li>Description de la partie haute de l'écran d'accueil, au-dessus de la grille, dans l'espace dit manuel</li>
+<li>Procédures diverses (sélection de grille, réinitialisatin des archives, enregistrement de grille avec archive personnelle par défaut, test pour modification du programme)</li>
+<li>9 méthodes basiques de résolution manuelle de grilles de sudoku</li>
+<li>10 méthodes difficiles de résolution manuelle de grilles de sudoku</li>
+<li>Description de l'interface de l'écran pour la résolution de grilles de sudoku par ordinateur, dans l'espace dit automatique</li>
+<li>Signification des icônes de l'espace automatique</li>
+<li>La zone des messages</li>
+<li>Les 7 listes (Méthodes, Méthodes unicité, Etapes, Variantes, Hypothèses, Archives, Grilles)</li>
+<li>L'écran des filtres et options</li>
+<li>Le calcul de grilles de sudoku par ordinateur</li>
+<li>L'application ponctuelle des méthodes de résolution</li>
+<li>La création de grilles de sudoku</li>
+<li>La génération de grilles de sudoku</li>
+<li>Les crashs pour impossibilité</li>
+<li>Les crashs pour défaut d'unicité et les méthodes pour les éviter</li>
+<li>Le clavier virtuel</li>
+<li>Utilisation des différents navigateurs</li>
+<li>Limitations de l'utilisation de l'imprimante en couleur</li>
+<li>Messages d'erreurs</li>
+<li>Bugs occasionnels identifiés et non résolus avec recherche de palliatifs</li>
+<li>Liste des méthodes implantées dans ce programme de sudoku avec exemples</li>
+</ol>
+<tr bgcolor="#FFFF80">
+<br><br><br><br> 
+<td><h1><u><ol start="0"><li>Qu'est-ce que c'est sudokunew</li></u></h1></td>
+<td><h2>
+Le site internet www.sudokunew.com présente, outre se nombreuses fonctionnalités, une combinaison de 2 caractéristiques essentielles :
+<ul>
+<li>Une méthode de résolution irréfutable pour valider une grille, qu’elle soit correcte avec une seule solution, ou fausse sans solution, ou fausse avec plusieurs solutions</li>
+<li>Un solveur très performant, avec de nombreuses méthodes de résolution</li>
+</ul>
+</td>
+<br><br><br><br> 
+<td><h1><u><ol start="1"><li>Comment sudokunew valide irréfutablement une grille</li></u></h1></td>
+<td><h2>
+A chaque étape de calcul, l’ordinateur explore toutes les méthodes de résolution à sa disposition, que ce soit pour impossibilité (32 méthodes) ou défaut d’unicité (20 méthodes).
+<br><br>
+Si aucune n’est applicable, il fait une hypothèse aléatoire sur une case et continue le calcul.
+<br><br>
+Si un nouveau cas de méthodes non applicables apparaît, il fait une nouvelle hypothèse. Et ainsi de suite jusqu’à un résultat qui est soit une solution, soit une impossibilité.
+<br><br>
+Dans tous les cas, cette liste de calcul étant terminée, il recommence <u>une nouvelle liste de calcul depuis la dernière hypothèse avant ce résultat</u>,  et il la corrige. 
+<br><br>
+Le calcul continue ainsi jusqu’à épuisement de toutes les hypothèses.
+<br><br>
+Le bilan se fait alors en regardant les résultats de toutes les listes de calcul obtenues.
+<br><br>
+Si aucune solution n’apparaît, la grille est fausse pour impossibilité.
+<br><br>
+Si une seule solution apparaît, la grille est correcte.
+<br><br>
+Si plusieurs solutions apparaissent, la grille est fausse pour défaut d’unicité.
+<br><br>
+<b><u>Cette méthode est irréfutable</u></b>.
+</td>
+<br><br><br><br> 
+<td><h1><u><ol start="2"><li>La puissance du solveur : démonstration sur une grille publiée</li></u></h1></td>
+<td><h2>
+Un seul  exemple pour montrer combien ce solveur est puissant :
+<br><br>
+la grille suivante a été obtenue à la 45<sup>ème</sup> étape de calcul d’une grille publiée dans un magazine :
+<br><br>
+<img src="images/Paris Match/Grille initiale.png"
+<br><br>
+<br><br>
+La même grille avec ses chiffres candidats dans les cases non affectées :
+<br><br>
+<img src="images/Paris Match/Grille initiale avc détails.png"
+3 cases ont plus de 2 chiffres, en fait 3 chiffres : D5, D6, H4.
+<br><br>
+Si on lance le calcul, on obtient les 3 étapes de calcul suivantes :
+<br><br>
+<b>Elimination dans un bloc</b>
+<br><br>
+<img src="images/Paris Match/Eyape de calcul 1.png"
+<br><br>
+<h2>A cette étape, une méthode simple permet d’éliminer les chiffres en rouge. De ce fait, les cases D5 et D6 sont réduites à 2 chiffres.
+<br><br>
+L’étape 2 est beaucoup plus compliquée :
+<br><br>
+<img src="images/Paris Match/Atape de calcul 2.png"
+<br><br><h2>
+<img src="images/Paris Match/Etape de calcul 2 suite 1.png"
+<br><br>
+<img src="images/Paris Match/Etape de calcul 2 suite 2.png"
+<br><br><br><br>
+Cette méthode très compliquée est appelée <u>forteresse maxilien</u> à 19 cases, <h1><b><u>hors de portée d’une résolution humaine</u></b></h1>. 
+<br><br>
+<h2>Elle réduit la case H4 à 2 chiffres candidats. 
+<br><br>
+Aucune case n’ayant plus de 2 chiffres candidats, la grille est devenue fausse par la méthode Bug+1.
+<br><br>
+Cette grille publiée est donc fausse par défaut d'unicité, ce qui s'explique par le fait qu'elle est humainement impossible à contrôler.
+<br><br>
+Elle a les 2 solutions suivantes :
+<br><br>
+<img src="images/Paris Match/Solution 1.png"
+<br><br>
+<img src="images/Paris Match/Solution 2.png"
+<br><br>
+<br><br>
+<h1><b><u>Conclusion</u></b>
+<br><br>
+Sudokunew.com associe ainsi une méthode de validation complète des grilles à un solveur capable de mettre en œuvre des méthodes de résolution hors de portée d'une résolution humaine.</h1>
+</td>
+<td><h1><u><ol start="3"><li>La résolution de grille manuelle avec cette application de sudoku (sélection et désélection, effacement)</li></u></h1></td>
+<td><h2>
+La grille apparaissant au moment du chargement du programme est très facile, faisant partie des grilles existantes dans le programme.
+Pour changer de grille, il existe plusieurs méthodes :
+<br><br>
+Cela commence par la sélection de l'un des 3 types de grilles à résoudre :
+<ul>
+<li>Les grilles incorporées dans le programme, réparties dans 4 archives dites de base, non modifiables et non effaçables. Un sélecteur, sous la barre d'icônes, permet de choisir le niveau de difficulté de la grille aléatoire à choisir parmi ces grilles de base, puis il suffit de cliquer sur l’icône <img src="images/sunshutterstock.jpg" width="25" height="25"> appelant une nouvelle grille aléatoire ayant cette difficulté.</li>
+<li>Les grilles générées par le programme en cliquant sur l’icône correspondante <img src="images/Generation.png" width="25" height="25">. Cette icône se trouve dans l'écran des résolutions par ordinateur.</li>
+<li>Les grilles créées par l’utilisateur, à partir de grilles trouvées dans des revues, des journaux ou sur internet. En cliquant sur l'icône <img src="images/Nouvellegrille.png" width="25" height="25">, une grille vierge apparaît avec le nom N. Un outil de saisie performant (survol à l'aide de la souris de la case choisie, ce qui fait apparaître un tableau interne avec les chiffres candidats de cette case, puis clic sur le chiffre choisi) permet de déterminer rapidement les chiffres de cette grille, en moins d'une minute. Il faut ensuite changer le nom ce cette grille, et éventuellement le nom de son archive. Il faut ensuite cliquer sur l'icône <img src="images/Sauvegarde.png" width="25" height="25"> pour enregistrer cette grille nouvelle.</li>
+</ul>
+La résolution manuelle de la grille choisie passe ensuite par la sagacité de l’utilisateur.
+<br><br>      
+Après chaque saisie, un message apparaît sous la grille. Un outil d’aide peut être activé sous la barre d'icônes. Cela peut faire apparaître un point d’exclamation à la fin du message sous la grille, pour indiquer si le choix est valide. Car la grille a été calculée au préalable au moment de la sélection par l’ordinateur, lequel connaît donc le résultat.
+<br><br>      
+A chaque saisie de chiffre dans une case, une liste d’étapes de calcul s’allonge.
+<br><br>
+L'icône <img src="images/Basculeaffichage.png" width="25" height="25">en haut de l’écran permet de faire apparaître et disparaître les chiffres candidats des cases de la grille. Lorsque les chiffres candidats des cases non encore sélectionnées de la grille apparaissent, il est alors possible, par le survol d’une case, de faire apparaître son tableau interne, auquel cas, le fait de cliquer un chiffre de cette case <b><u>le désélectionne de la liste de ses chiffres candidats</u></b>.
+<br><br>
+En cas d’erreur manuelle ou de fausse manipulation, ; il est possible d’annuler la dernière opération manuelle en cliquant sur l’icône correspondante <img src="images/undo.png" width="25" height="25"> en haut de l’écran.
+<br><br>
+Une autre opération d’annulation est possible lors de la sélection d’un chiffre pour une case est de sortir de cette case pour y revenir puis double cliquer sur ce chiffre.
+<br><br>      
+<u><b>La sélection d'un chiffre dans une case</b></u>
+<br><br>
+La procédure consiste donc à survoler une case avec la souris, ce qui fait apparaître le tableau interne des chiffres-candidats de cette case, puis à cliquer sur un de ces chiffres pour le sélectionner.
+<br><br><img src="images/Aide/Grille 1.png" width="600" height="750">
+<br><br>Cette même grille, lorsque la souris survole la case G3, faisant apparaître son tableau interne de chiffres candidats : <br><img src="images/Aide/Grille 2.png" width="620" height="750">
+<br><br>Cette même grille, après avoir cliqué sur le chiffre 8 de ce tableau interne avec le bouton gauche de la souris, ce qui sélectionne ce chiffre 8 pour la case G3 : <br><img src="images/Aide/Grille 3.png" width="620" height="750">
+<br><u><b>La désélection d'un chiffre dans une case</b></u><br><br>
+La procédure consiste d'abord à cliquer sur l'icône de bascule affichage <img src="images/Basculeaffichage.png" width="25" height="25"> en haut de l'écran, ce qui fait apparaître les chiffres-candidats dans les cases de la grille.
+Puis la procédure est la même que pour la sélection d'un chiffre pour une case, c'est-à-dire survoler une case avec la souris, ce qui fait apparaître le tableau interne des chiffres-candidats de cette case, puis à cliquer sur un de ces chiffres pour le désélectionner. Ce chiffre disparaît de la liste des chiffres-candidats de cette case.
+<br><br>La grille de départ avec ses chiffres candidats, lorsque l'on clique sur l'icône de bascule affichage <img src="images/Basculeaffichage.png" width="25" height="25"> en haut de l'écran : <br><img src="images/Aide/Grille 4.png" width="620" height="750">
+<br><br>Cette même grille, lorsque la souris survole la case G3, faisant apparaître son tableau interne de chiffres candidats : <br><img src="images/Aide/Grille 5.png" width="620" height="750">
+<br><br>Cette même grille, après avoir cliqué sur le chiffre 9 de ce tableau interne avec le bouton gauche de la souris, ce qui désélectionne ce chiffre 9 pour la case G3 : <br><img src="images/Aide/Grille 6.png" width="620" height="750">
+<br><u><b>L'effacement de la dernière opération manuelle</b></u><br><br>
+La procédure consiste à cliquer sur l'icône d'effacement en haut de l'écran <img src="images/undo.png" width="35" height="35">, puis à cliquer 2 fois sur l'icône de bascule affichage <img src="images/Basculeaffichage.png" width="35" height="35"> en haut de l'écran. 
+<br><br><u><b>L'utilisation des méthodes de résolution</b></u><br><br>
+La procédure consiste, à une étape de calcul donnée, à cliquer sur l'icône de sélection de liste de méthodes <img src="images/Methodes.png" width="35" height="35"> en haut de l'écran, ce qui fait apparaître la liste des méthodes dans la zone des listes.
+Puis à sélectionner une méthode particulière dans cette liste, en cliquant dessus. Cela fait apparaître une nouvelle liste, celle des variantes de cette méthode, si celle-ci est applicable. Si la méthode est non effective, aucune variante n'apparaît.
+<br><br>Sur la grille, l'ensemble des chiffres éliminés par toutes les variantes de cette méthode apparaît en rouge.
+<br><br>La première ligne de la liste des méthodes s'appelle l'ensemble des méthodes applicables. En cliquant dessus, le programme parcourt toutes les méthodes de résolution, et fait apparaître toutes celles qui sont applicables, c'est-à-dire qui sont effectives. 
+<br>Dans ce cas, la liste de toutes les variantes de toutes les méthodes applicables apparaît dans la zone de liste. Sous la grille, dans la zone des messages, la liste des méthodes applicables apparaît avec le nombre de variantes de chaque méthode et, sur la grille, apparaissent en rouge, l'ensemble des chiffres affectés par l'application de toutes ces méthodes.
+<br>Parmi les icônes en haut de la liste des variantes de toutes ces méthodes, l'icône <img src="images/Coupe rouge.png" width="35" height="35"> permet de faire disparaître tous les chiffres rouges de la grille.
+<br>En appliquant plusieurs fois cette procédure en 3 étapes (clic sur l'icône de sélection des méthodes, puis sélection de la première ligne de cette liste de méthodes, puis clic sur l'icône éliminant les chiffres rouges de la grille), on arrive très rapidement à la solution. Il faut appliquer en moyenne 3 fois cette procédure pour trouver la solution. 
+<br><br>La grille de départ, après avoir cliqué sur l'icône de sélection de liste de méthodes <img src="images/Methodes.png" width="35" height="35"> en haut de l'écran, puis avoir cliqué sur la première rubrique de cette liste de méthodes appelé "Toutes les méthodes applicables", ce qui a eu pour effet d'appliquer toutes les méthodes du programme applicables, montrant la liste des chiffres candidats éliminés, en rouge sur la grille : <br><img src="images/Aide/Grille 7.png" width="620" height="750"> 
+<br><br>Cette même grille, après avoir cliqué sur l'icône d'élimination des chiffres rouges <img src="images/Coupe rouge.png" width="35" height="35"> en haut de la liste des variantes :<br><img src="images/Aide/Grille 8.png" width="620" height="750"> 
+<br><br><br><br>La liste des méthodes applicables à la grille Amandier comporte 66 variantes (début de la liste) : <img src="images/Aide/Toutes les méthodes grille amandier.png" width="1200" height="600" />
+<br><br>Les opérations de sélection et de désélection de chiffres candidats dans les cases de la grille, sont celles de la résolution manuelle de cette grille.
+<br>La sélection de la liste des méthodes s'effectue en cliquant sur l'icône <img src="images/Methodes.png" width="35" height="35">. Dans cette liste, il est possible de sélectionner une méthode particulière, pour vérifier si elle est applicable, avec le nombre de variantes qu'elle génère. Il est aussi possible de sélectionner la première ligne de cette liste, à savoir la liste de toutes les méthodes applicables. Dans ce cas, il faut être patient, car l'exécution de toutes les méthodes peut prendre du temps.
+ Cela permet de connaître l'ensemble des méthodes applicables, avec leur nombre de variantes, ainsi que l'effet sur la grille, avec l'apparition de chiffres en rouge, qui sont ceux qui sont éliminés.
+<br>Car l'opération de sélection de l'ensemble des méthodes applicables est réalisée par l'ordinateur, montrant à l'utilisateur ce qu'il est possible de faire en appliquant des méthodes sophistiquées, que les experts en sudoku savent faire.
+<br><br>Si aucune méthode n'est applicable, il est nécessaire de faire une hypothèse aléatoire, qui, si elle n'aboutit pas, nécessite de la corriger, ce qui prend beaucoup de temps, car il est parfois nécessaire de faire des hypothèses en cascade.
+<br><br>L'ordinateur sait calculer automatiquement une grille, même avec hypothèses, ce qui est expliqué ci-après.
+<br><br>Il est donc possible de sélectionner, dans la liste des méthodes, une méthode particulière, pour savoir si elle est applicable, et le nombre de variantes qu'elle peut générer.
+<br><u>Attention</u> : Pour sélectionner ensuite une autre méthode, il faut d'abord resélectionner la liste des méthodes <img src="images/Methodes.png" width="35" height="35">, avant de choisir cette nouvelle méthode. 
+</h2>
+
+
+
+
+
+<td><h3>
+Au chargement du programme, une grille très facile, implantée en dur dans le programme, apparaît à l'écran. Avec l'affichage de son nom et du nom de l'archive qui la contient.
+Pour une résolution manuelle de cette grille, les 5 procédures de base sont les suivantes :
+<ul>
+<li>Déplacer la souris sur une des cases vierges où on pense connaître le chiffre à positionner. Un tableau interne apparaît dans cette case avec les chiffres-candidats de cette case; cliquer sur un de ces chiffres pour le <b><u>sélectionner</b></u>. Avec une écran tactile, appuyer sur une case de la grille, pour faire apparaître le tableau interne de ses chiffres-candidats et appuyer sur un de ces chiffres pour le <u><b>sélectionner</b></u>.</li>
+<li>Cliquer sur l'icône <img src="images/Basculeaffichage.png" width="35" height="35"> en haut de l'écran, pour faire apparaître la grille avec les cases vierges qui se sont remplies de leurs chiffres-candidats. Puis positionner le souris sur une de ces cases avec ses chiffres-candidats, ce qui fait apparaître le tableau interne de cette case, puis cliquer sur un des chiffres de ce tableau, ce qui <b><u>désélectionne</b></u> ce chiffre dans cette case. Pour revenir à la grille sans les chiffres-candidats, cliquer à nouveau sur l'icône <img src="images/Basculeaffichage.png" width="35" height="35">. Avec un écran tactile, il faut appuer sur l'icone <img src="images/Basculeaffichage.png" width="35" height="35">, puis appuyer sur une case avec ses chiffres-candidats, et enfin appuyer sur un des chiffres du tableau interne qui apparaît, pour le <b><u>désélectionner</b></u>. Réappuyer sur l'icône <img src="images/Basculeaffichage.png" width="35" height="35"> pour revenir à la grille sans les chiffres-candidats.</li>
+<li>Pour changer de grille, cliquer sur l'icône <img src="images/sunshutterstock.jpg" width="35" height="35"> en haut de l'écran. Cette grille nouvelle aléatoire est encore très facile. Pour obtenir une grille plus difficile, voire diabolique, sélectionner, dans le menu déroulant sous la liste d'icônes, appelé Niveau de difficulté, le niveau de la grille que vous allez sélectionner aléatoirement.</li>
+<li>Quand on <b><u>sélectionne ou désélectionne</u></b> un chiffre dans une case, un message sous la grille indique l'opération qui vient d'être effectuée. Une assistance à la résolution manuelle existe si on coche la rubrique Assistance à la résolution manuelle, sous la liste d'icônes en haut de l'écran. Cette assistance se manifeste alors par l'apparition du symbole ! à la fin du message sous la grille, pour indiquer que l'opération est correcte.</li>
+<li>Pour annuler la dernière opération manuelle, il faut cliquer (ou appuyer, avec un écran tactile comme un téléphone portable) sur l'icône d'annulation <img src="images/undo.png" width="35" height="35">, en haut de l'écran. Pour valider cette opération d'annulation, il faut cliquer (ou appuyer, avec un écran tactile comme un téléphone portable) 2 fois sur l'icône de basculement d'affichage <img src="images/Basculeaffichage.png" width="35" height="35"> en haut de l'écran.</li>  
+</ul>
+</td>
+<br><br><br><br> 
+<td><h2><u><ol start="4"><li>Description de l'interface de l'écran pour la résolution de grilles de sudoku par ordinateur, dans l'espace dit automatique<</u></h2></td>
+<td><h3>
+Au chargement du programme, une grille très facile, implantée en dur dans le programme, apparaît à l'écran. Avec l'affichage de son nom et du nom de l'archive qui la contient.
+Le nom de cette grille apparaît aussi en fin de la liste des grilles de cette archive, sous la grille et après la zone de commentaires. En cliquant sur ce nom de grille, dans cette liste, le programme calcule cette grille et affiche la solution. Ce n'est pas le but recherché, puisque le but du programme est d'abord de permettre une résolution manuelle de grille.
+<br><br>En cas de clic (ou appui pour un écran tactile) sur la grille de départ, ayant ainsi fait apparaître la solution, 
+il faut, pour récupérer la grille originelle, naviguer avec les flèches haut et bas. 
+Ceci est valable aussi pour une création manuelle de grille ou pour une génération de grille (voir ci-après)
+<br><br>
+Il existe, comme expliqué précédemment, 3 types de grilles de sudoku : 
+<ul>
+<li>Celles existant dans le programme, au nombre de 152, de tout niveau de difficulté, chargées aléatoirement, soit au démarrage du programme, soit en cliquant sur l'icône dans la barre d'icônes en haut de l'écran. Le niveau de difficulté de cette grille est déterminé par le choix qui a été fait dans la liste déroulante du niveau de difficulté.</li>
+<li>Celles créées par l'utilisateur, en cliquant sur l'icône <img src="images/Nouvellegrille.png" width="35" height="35"> dans la barre d'icônes en haut de l'écran. Cela fait apparaître une grille vierge, que l'utilisateur peut remplir, à l'aide d'une procédure expliquée ci-après. L'utilisateur doit aussi renseigner le nom de cette grille qui, au moment de l'enregistrement va être chargée dans l'archive dénommée "Nouvelle archive". L'utilisateur peut aussi changer le nom de cette archive, auquel cas la grille va être chargée dans cette archive personnelle.</li>
+<li>Celles générées par l'ordinateur quand l'utilisateur clique sur l'icône <img src="images/Generation.png" width="35" height="35"> dans la première ligne de barres d'icônes en haut de l'écran, dans l'espace de création automatique par ordinateur.</li>
+</ul>
+Il vaut mieux cocher l'assistance à la résolution manuelle, pour être bien sûr que l'opération manuelle venant d'être effectuée, est bien correcte. Ceci se manifeste par l'apparition du symbole ! à la fin du message sous la grille.
+Cette assistance fonctionne bien sûr pour les grilles existant en dur dans le programme (dont le programme connaît le résultat) Elle fonctionne également pour les grilles personnelles, créées ou générées, car lors du chargement d'une de ces grilles, le programme commence par la calculer, afin d'identifier le résultat, ce qui permet de valider l'assistance manuelle. Ce calcul préparatoire peut prendre du temps, entre quelques secondes pour des grilles faciles, et jusqu'à quelques minutes pour des grilles très difficiles avec hypothèses (sur ordinateur), mais jusqu'à 30 minutes sur écran tactile (téléphone portable); il faut alors patienter le temps que ce calcul s'achève, avant de commencer la résolution manuelle.  
+<br><br>La grille peut être affichée sous 2 formes : avec ou sans les chiffres candidats dans les cases non encore affectées (en cliquant alternativement sur l'icône de bascule affichage <img src="images/Basculeaffichage.png" width="25" height="25"> en haut de l'écran ). Lorsque l'utilisateur survole des cases de la grille, un tableau interne apparaît dans la case en cours de survol, contenant les chiffres candidats de cette case. Si l'utilisateur clique sur un de ces chiffres, ce chiffre est affecté à la case, si la grille ne fait pas apparaître les chiffres-candidats dans les cases non affectées, sinon, ce chiffre est  désélectionné comme chiffre candidat de cette case.
+<br><br>L'utilisateur résoud la grille, soit en affectant des chiffres aux cases non encore affectées, soit en éliminant des chiffres-candidats dans les cases non encore affectées.
+<br><br>Si l'utilisateur cale, il peut demander à l'ordinateur de lui indiquer une méthode de résolution efficace, et de lui en montrer le résultat de l'application de cette méthode. Cela peut s'obtenir en cliquant sur l'icône <img src="images/Methodes.png" width="35" height="35"> en haut de l'écran, et en choisissant une méthode dans la liste des méthodes qui apparaît sous le message sous la grille. Il peut aussi choisir la rubrique "Toutes les méthodes applicables" en haut de cette liste, auquel cas, l'ordinateur calcule toutes les méthodes efficaces, affiche en rouge tous les chiffres candidats éliminés par ces méthodes efficaces et, sur fond vert ou orange, les chiffres ayant contribué à trouver une solution efficace. Il indique aussi la liste de toutes les variantes de toutes ces méthodes efficaces. 
+ Cela permet à l'utilisateur d'essayer de comprendre comment fonctionnent ces méthodes, dont le résultat est expliqué sous la grille : explication particulière de l'exemple en cours, et explication générale de la manière dont fonctionne la méthode présentée.
+ Bien attendre la fin du calcul des méthodes par l'ordinateur, applicables ou pas, car cela prend du temps.
+<br><br>Une liste exhaustive d'exemples d'utilisation de ces méthodes (32 pour impossibilté, 19 pour défaut d'unicité) est présentée à la fin de cette aide. Avec explication particulière de chaque exemple présenté, et une explication générale de la méthode utilisée.
+<br><br><u><b>En résumé</b></u>, la résolution manuelle d'une grille affichée, soit extraite des grilles existantes dans le programme, soit créée manuellement à partir de grilles existantes dans des revues ou sur internet, soit générées aléatoirement par le programme, se fait de manière simple :
+<ul>
+<li>Sur ordinateur, survoler une case non affectée avec la souris, ce qui fait apparaître un tableau interne de cette case contenant les chiffres candidats de cette case, puis cliquer sur un de ces chiffres, ce qui affecte ce chiffre à cette case.</li>
+<li>Sur téléphone mobile, appuyer sur une case non affectée de cette grille, ce qui fait apparaître son tableau interne contenant ses chiffres candidats, puis appuyer sur un des chiffres de ce tableau interne, ce qui affecte ce chiffre à cette case.</li>
+</ul>
+Répéter cette opération jusqu'à la résolution de la grille, où toutes  les cases sont affectées.
+<br><br>Si on clique sur l'icône de bascule affichage <img src="images/Basculeaffichage.png" width="35" height="35">, en haut de l'écran, les chiffres candidats apparaissent dans les cases vierges. Dans ces conditions, l'opération ci-dessus, soit sur ordinateur, soit sur téléphone portable, permet, non plus d'affecter un chiffre à une case, mais de désélectionner un chiffre de cette case. C'est cette opération, plus que l'affectation d'un chiffre à une case, qui permet d'approcher plus rationnellement de la solution.
+<br><br>L'utilisateur peut corriger la dernière opération manuelle effectuée en cliquant (ou appuyant dessus) sur l'icône d'annulation <img src="images/undo.png" width="35" height="35">, en haut de l'écran, ce qui annule la dernière opération manuelle, puis en cliquant 2 fois  sur l'icône de bascule affichage <img src="images/Basculeaffichage.png" width="35" height="35">.
+<br><br>En fait, toutes les méthodes de résolution, de la plus simple à la plus sophistiquée, visent à désélectionner des chiffres candidats dans les cases. C'est ce qui est expliqué tout au long de cette aide.
+<h1>Récapitulatif</h1>
+<td><h2>
+Ce programme est composé de 2 parties distinctes :
+<ul>
+<li>une première partie, appelée espace de résolution manuelle de grilles de sudoku (ou espace manuel), permet à un utilisateur de résoudre manuellement des grilles choisies parmi 152 grilles implantées dans la programme, de tout niveau de difficulté. Au chargement du programme, c'est l'écran d'accueil de cet espace qui apparaît.</li>
+<li>Une deuxième partie, appelée espace de calcul de grilles par ordinateur (ou espace automatique).</li>
+</ul>
+C'est cette 2<sup>ème</sup> partie qui constitue l'originalité de ce programme, le distinguant de tout ce qui existe sur internet. Car c'est cela qui permet  de résoudre toutes les grilles existantes et d'expliquer le mécanisme de résolution. Cette partie va au delà des méthodes de base qu'utilisent la majorité des utilisateurs, méthodes au nombre limité (environ 5); elle propose 32 méthodes sophistiquées, couvrant la quasi-totalité des méthodes employées par les joueurs de compétition, auxquelles il faut ajouter 19 méthodes couvrant la majorité des méthodes concernées par les défauts d'unicité.
+Ces 2 espaces partagent les mêmes données et communiquent entre eux.
+<br><br>Ce programme ne se contente donc pas de suivre pas à pas une résolution manuelle, en fournissant des indices à l'occasion, comme le font la quasi-totalité des solveurs de sudoku sur internet.<br><br>
+L'application sur internet www.sudokunew.com est un exemple d'application réussie sur internet. Ecrite en open source, utilisant les outils de base internet (HTML, CSS et javascript), elle peut servir de modèle pour le développement d'applications sur internet. La méthode utilisée pour aboutir à ce résultat sera expliquée ultérieurement par le développeur, Raoul SALZBERG. 3 principes doivent être respectés dans un tel développement : avoir un code propre dit DRY (Don't Repat Yourself, voulant dire de ne pas se répéter), actualiser les images d'exemples au fur et à mesure du développement, et nettoyer régulièrement les portions de code devenues obsolètes (code dit mort).
+<br><br>
+Pour résoudre la grille d'accueil, comme le font tous les sites de sudoku, il faut survoler une case avec la souris, ce qui fait apparaître un tableau interne, puis sélectionner un chiffre de cette case en cliquant dessus.<br>
+<br>Pour une utilisation avec écran tactile comme par exemple avec un téléphone portable, il faut appuyer sur une case, ce qui fait apparaître un tableau interne, puis appuyer sur un chiffre de ce tableau pour le sélectionner.
+Recommencer cette procédure jusqu'à la solution. Une liste des étapes de résolution, sous le diagramme, retrace, au fur et à mesure, l'historique de cette résolution, que l'on peut consulter à tout moment.<br><br> 
+Pour changer de grille, il suffit de cliquer sur l'icône de sélection de grille <img src="images/sunshutterstock.jpg"  width="35" height="35"> en haut de l'écran.<br>
+La première grille qui apparaît au chargement du programme est une grille très facile. Pour obtenir une grille plus difficile, il suffit de sélectionner un niveau de difficulté dans la liste déroulante sous les icônes du haut de l'écran, avant de cliquer sur l'icône de sélection de grille <img src="images/sunshutterstock.jpg" width="35" height="35">.<br>
+Pour obtenir de l'aide en cours de résolution, il faut cocher l'assistance à droite de la sélection du niveau de difficulté. Cette aide se manifeste par l'apparition du symbole ! à la fin du message sous la grille. Celui-ci indique que la sélection est correcte.<br>
+Il est possible d'annuler la dernière sélection, en cliquant sur l'icône d'annulation <img src="images/undo.png" width="25" height="25">.<br><br>
+Dans le cas d'une utilisation, soit avec une souris, soit avec un écran tactile, il faut d'abord faire apparaître le tableau interne des chiffres candidats d'une case, soit en survolant cette case avec la souris, soit en appuyant sur cette case (dans le cas d'un écran tactile, comme pour un téléphone portable). 
+<br><br>Il existe alors 5 facilités dans le cas d'utilisation d'une souris, et 3 facilités dans le cas d'utilisation d'un écran tactile :
+<ul>
+<li>Sélection d'un chiffre du tableau interne, soit par <u>clic gauche</u> de la souris sur ce chiffre, soit par appui sur ce chiffre (écran tactile)</li>
+<li>Dans le cas d'utilisation d'une souris, désélection d'un chiffre du tableau interne par <u>clic droit</u> de la souris sur ce chiffre</li>
+<li>Cette désélection peut se faire aussi en cliquant sur l'icône de bascule affichage des chiffres candidats dans les cases <img src="images/Basculeaffichage.png" width="25" height="25">, en haut de l'écran, ce qui fait donc apparaître ces chiffres-candidats, puis de survoler une case avec la souris, ce qui fait apparaître son tableau interne. La sélection d'un des chiffres de ce tableau, le désélectionne. Cette opération est également valable avec écran tactile (téléphone portable), où la sélection se fait en appuyant sur un des chiffres du tableau interne.</li>
+<li>Dans le cas d'utilisation d'une souris, dévalidation d'un chiffre affecté à une case par <u>double clic gauche</u> de la souris sur ce chiffre</li>
+<li>Cette dévalidation peut se faire également <u>en cliquant sur l'icône d'annulation</u> <img src="images/undo.png" width="25" height="25">, ce qui dévalide la dernière sélection ou désélection manuelle.</li>
+</ul>
+Dans un programme comme celui-ci, il est obligatoire qu'il reste des erreurs appelées bugs. Au fur et à mesure de son utilisation, un ou plusieurs bugs peuvent apparaître, et il faut ensuite les éliminer. Certaines techniques pointues sont les plus concernées par ces bugs. C'est le cas des méthodes d'élimination des défauts d'unicité.
+<br>Un utilisateur persévérant peut arriver à planter le programme en multipliant les procédures qui peuvent parfois être contradictoires, laquelle contradiction n'a pas été correctement identifiée par un message d'erreur ! En renseignant celui qui a réalisé ce programme, celui-ci pourra y apporter une correction.
+<br>En cas de plantage, il faut revenir aux 4 archives de base, éliminant les archives personnelles. Pour cela, sélectionner la liste des archives, et cliquer sur l'icône de retour aux 4 archives de base <img src="images/reinitarchive.png" width="35" height="35">, se trouvant dans la liste des 4 icônes pilotant les archives. Cette procédure doit être autorisée dans l'écran des filtres et options. 
+</td>
+
+<td><h1><u><ol start="5"><li>Description de la partie haute de l'écran d'accueil, au-dessus de la grille (espace dit manuel)</u> :</h1></td>
+<td><h2>
+La partie haute de l'écran d'accueil du programme, au-dessus de la grille, est la suivante :<br><br>
+<img src="images/Haut ecran.png" width="1000" height="(500"><br><br>
+<h2>
+<br><br>Cette image est composée, dans l'ordre, des éléments suivants :
+<ul>
+<li>Une rangée de 11 icônes, dont la signification est décrite ci-dessous</li>
+<li>Sous cette rangée d'icônes, une liste déroulante des niveaux de difficulté de la grille, que l'utilisateur peut sélectionner avant de choisir aléatoirement une grille du programme en cliquant sur l'icône <img src="images/sunshutterstock.jpg" width="35" height="35"></li>
+<li>A droite de cette liste de niveaux de difficulté, se trouve une case à cocher qui, si elle est cochée, fournit une assistance à la résolution manuelle de la grille, en indiquant si l'opération que vient d'effectuer l'utilisateur est correcte, par la présence, à la fin du message sous la grille, du symbole !.</li>
+<li>Le nom de l'archive dans laquelle se trouve la grille</li>
+<li>Le nom de la grille</li>
+</ul>
+<u>Signification des 11 icônes dans l'écran d'accueil</u><br><br>
+<img src="images/Impression.png" width="35" height="35"> Impression de la grille<br>
+<img src="images/Validationmethode.png" width="35" height="35">Transfert dans l'espace de résolution par ordinateur et de génération de grilles (espace dit automatique)<br>
+<img src="images/Basculeaffichage.png" width="35" height="35"> Bascule affichage des chiffres-candidats dans les cases de la grille<br> 
+<img src="images/sunshutterstock.jpg" width="35" height="35"> Appel aléatoire de grille en archive<br>
+<img src="images/undo.png" width="35" height="35"> Annulation dernière action manuelle<br>
+<img src="images/Aide.png" width="35" height="35">Aide (cet écran)<br>
+<img src="images/calcul.png" width="35" height="35"> Calcul automatique d'une grille utilisant toutes les méthodes de résolution disponibles, calcul à partir de l'étape en cours (souvent depuis le début, pour un calcul complet), avec affichage final de la liste des étapes et de la grille remplie (si solution sans hypothèse), avec indication si la grille est correcte. <u><b>Quand une grille est chargée (soit par création, soit par génération, soit par sélection), il est possible de lancer son calcul par ordinateur en cliquant sur cette icône</b></u>.<br> 
+<img src="images/Methodes.png" width="35" height="35"> Accès à la liste des méthodes de résolution disponibles dans ce programme, affichée sous le diagramme de la grille</br>
+<img src="images/Nouvellegrille.png" width="35" height="35"> Création d'une nouvelle grille personnelle, partant d'une grille vierge, et effectuant une saisie manuelle des chiffres dans les cases. La grille est mise à zéro et le  titre affiche la lettre N. On peut alors remplir cette grille à la main, et renseigner son titre (éventuellement avec le clavier virtuel qui s'affiche à l'écran quand on clique dans la zone de titre). La grille peut être remplie grâce au tableau interne apparaissant dans une case lors de son survol par la souris (voir ci-dessus) puis sauvegardée, en cliquant sur l'icône d'enregistrement <img src="images/Suppression.png"  width="35" height="35"> (icône suivante), ce qui fait apparaître son nom en fin de la liste affichée des grilles. Cette opération de sauvegarde n'est pas possible dans les 4 archives de base, la grille étant alors incorporée automatiquement dans une archive auxiliaire appelée "Nouvelle archive".<br><br>
+<img src="images/Sauvegarde.png" width="35" height="35"> Enregistrement de la grille en cours dans le webstorage de l'utilisateur, avec enregistrement éventuel de sa nouvelle archive, celle dont le nom est  affiché.  Cela fait apparaître la grille en fin de la liste des grilles de l'archive en cours (avec éventuellement le numéro de l'étape de calcul en cours, pour un enregistrement pendant le calcul). Il n'est pas possible d'enregistrer dans les 4 archives de base, une archive auxiliaire étant créée pour cela, appelée "Nouvelle archive". Il faut avoir renseigné au moins 17 cases avant de sauvegarder cette grille nouvellement créée. Il faut renseigner au préalable les noms de l'archive et de la grille. <u><b>Attention</b></u> : 2 grilles différentes peuvent avoir le même nom; mais ce n'est pas recommandé.<br> <br> 
+<img src="images/Suppression.png"  width="35" height="35"> Suppression d'une grille personnelle. Après suppression, c'est la dernière grille de la liste des grilles enregistrées dans l'archive qui apparaît à l'écran.  Si la grille supprimée est la dernière de l'archive, cette archive est supprimée. Il n'est pas possible de supprimer des grilles des 4 archives de base.<br><br>
+Lorsque la souris survole l'une de ces icônes, un message en jaune apparaît en haut et à gauche de l'écran, indiquant la signification de cette icône; de plus, l'icône se dilate. L'utilisateur peut alors cliquer sur cette icône pour l'exécuter.<br><br>
+Pour une résolution manuelle de la grille, les éléments suivants (décrits ci-après) apparaissent sous la grille :
+<ul>
+<li>Un message indiquant l'opération que vient d'effectuer l'utilisateur</li>
+<li>La liste des étapes de cacul, retranscrivant l'historique des actions manuelles de l'utilisateur, surmontée de 3 icônes à cliquer, 2 pour la navigation haut et bas dans la liste des étapes de calcul, la troisième pour éventuellement imprimer la liste des étapes. Ces icônes sont activées par le survol de la souris, qui fait apparaître un message en jaune au bas de cette icône, en indiquant la signification, de même que l'icône se dilate</li>
+</ul>
+<br><br> 
+</td>
+
+<td><h1><u><ol start="6"><li>Procédures diverses (sélection de grille, réinitialisatin des archives, enregistrement de grille avec archive personnelle par défaut, test pour modification du programme)</li></u></h1></td>
+<td><h2>
+<u>Sélection d'une grille</u><br><br>
+Pour sélectionner une grille, il est nécessaire d'être dans l'espace automatique, pour y sélectionner la liste des archives, puis, dans cette liste, sélectionner l'archive où se trouve cette grille, sélectionner cette archive, ce qui fait apparaître la liste des grilles dans cette archive, et enfin y sélectionner la grille en question :
+Depuis l'espace d'accueil, cela donne la liste des opérations suivantes :
+<ul>
+<li>Cliquer sur l'icone de transfert vers l'espace automatique <img src="images/Validationmethode.png" width="35" height="35">, en haut de l'écran</li>
+<li>Cliquer sur l'icône de sélection de la liste des archives <img src="images/Archivage.png" width="35" height="35"> dans la 2<sup>ème</sup> ligne en haut de l'écran</li>
+<li>Descendre dans la liste des archives et y sélectionner l'archive dans la quelle se trouve la grille recherchée, ce  qui sélectionne la liste des grilles de cette archive</li>
+<li>Sélectionner la grille recherchée dans cette liste de grilles</li>
+</ul>
+<u><b>Attention</b></u>, si l'option de calcul lors de la sélection est activée, dans l'écran des filtres et options, la sélection entraîne un calcul de cette grille, ce qui permet de rendre effective l'assistance à la résolution manuelle. Pour des grilles difficiles, ce calcul peut être long; il vaut mieux alors de désactiver cette option, pour ne pas avoir à patienter à chaque sélection de grille.
+<br><br>Pour activer l'aide à la résolution manuelle, il faut cocher cette option dans l'espace de calcul manuel.
+<br><br><u>Réinitialisation des archives</u><br><br>
+Pour différentes raisons, il est parfois nécessaire d'effacer toutes les archives personnelles, ne gardant que les 4 archives de base. Le cas le plus fréquent est celui d'un plantage, ayant déterioré la liste des archives, rendant impossible la sélection de grilles.
+Depuis l'espace d'accueil, cela donne la liste des opérations suivantes :
+<ul>
+<li>Cliquer sur l'icone de transfert vers l'espace automatique <img src="images/Validationmethode.png" width="35" height="35">, en haut de l'écran</li>
+<li>Cliquer sur l'icône de sélection de la liste des archives <img src="images/Archivage.png" width="35" height="35"> dans la 2<sup>ème</sup> ligne en haut de l'écran</li>
+<li>Descendre dans la liste des archives et cliquer sur l'icône de réinitialisation des archives <img src="images/reinitarchive.png" width="35" height="35"> en haut de cette liste. Il faut pour que cette opération dangereuse puisse se faire, avoir sélectionné au préalable l'autorisation de la réinitialisation des archives, dans l'écran des filtres et options. Sinon, cette opération est refusée.</li>
+</ul>
+<br><u>Enregistrement de grille avec archive personnelle par défaut</u><br><br>
+L'enregistrement de grille se fait en cliquant sur l'icône <img src="images/Sauvegarde.png" width="35" height="35"> en haut de l'écran de l'espace d'accueil.
+Si le nom affiché de l'archive fait partie des 4 archives de base, l'enregistrement de la grille s'effectue dans une archive personnelle automatique, appelée "Nouvelle archive". C'est souvent le cas lors de création de grille ou de génération de grille.
+Sinon, si le nom de l'archive affiché est différent d'une des 4 archives de base, l'enregistrement de la grille se fait dans cette archive, ajoutée à la fin de la liste des grilles de cette archive. Si le nom de la grille existe déjà, la nouvelle grille va quand même s'installer à la fin de la liste des grilles, qui comprendra 2 grilles différentes avec le même nom. Ce n'est pas recommandé.
+<br><br><u>Test pour modification du programme</u><br><br>
+Cette facilité est disponible pour les utilisateurs désirant corriger ou agrandir cette application de sudoku, qui est en open source. Pour y avoir accès, il faut au préalable avoir coché cette option dans l'écran des filtres et options. Ceci fait apparaître l'icône <img src="images/doigt-main.png" width="35" height="35"> en haut de l'écran, dans l'espace automatique.
+Il suffit alors de cliquer sur cette icône, pour activer l'exécution de la fonction test() dans le programme en javascript iniautre.js.
+</h2>
+<td><h1><u><ol start="7"><li>9 méthodes basiques de résolution manuelle de grilles de sudoku</u> :</h1></td><td><h2>
+Ces 9 méthodes, décrites ci-dessous, sont celles utilisées par la grande majorité des joueurs, celles que l'on retrouve sur tous les sites internet de sudoku, avec une numérotation des blocs comme suit :<br><br><img src="images/Aide/Blocs numérotés.png" width="600" height="350" />
+<br><br>
+<ul>
+<li>Singleton nu (case à un chiffre)<br><img src="images/Aide/Usuels 1.png" width="600" height="750"><br><img src="images/Aide/Usuels 1 bis.png" width="800" height="350"></li>
+<li>Solo<br><img src="images/Aide/Usuels 2.png" width="600" height="750"><br><img src="images/Aide/Usuels 2 bis.png" width="800" height="350"></li>
+<li>Jumeaux<br><img src="images/Aide/Usuels 3.png" width="600" height="750"><br><img src="images/Aide/Usuels 3 bis.png" width="800" height="350"></li>
+<li>Triples<br><img src="images/Aide/Usuels 4.png" width="600" height="750"><br><img src="images/Aide/Usuels 4 bis.png" width="800" height="350"></li>
+<li>Quadruples<br><img src="images/Aide/Usuels 5.png" width="600" height="750"><br><img src="images/Aide/Usuels 5 bis.png" width="800" height="350"></li>
+<li>Jumeaux isolés<br><img src="images/Aide/Usuels 6.png" width="600" height="750"><br><img src="images/Aide/Usuels 6 bis.png" width="800" height="350"></li>
+<li>Triples isolés<br><img src="images/Aide/Usuels 7.png" width="600" height="750"><br><img src="images/Aide/Usuels 7 bis.png" width="800" height="350"></li>
+<li>Duo<br><img src="images/Aide/Usuels 8.png" width="600" height="750"><br><img src="images/Aide/Usuels 8 bis.png" width="800" height="350"></li>
+<li>Trio<br><img src="images/Aide/Usuels 9.png" width="600" height="750"><br><img src="images/Aide/Usuels 9 bis.png" width="800" height="350"></li>
+</ul>
+<br><br> 
+</td>
+<td><h1><u><ol start="8"><li>10 méthodes difficiles de résolution manuelle de grilles de sudoku</u> :</h1></td>
+<td><h2>
+<br><br>Ces 10 méthodes, décrites ci-dessous, sont une partie de celles utilisées par les joueurs experts en sudoku :
+<ul>
+<li>W-Wing (l'aile de l'aigle)<br><img src="images/Aide/Experts 1.png" width="600" height="750"><br><img src="images/Aide/Experts 1 bis.png" width="800" height="350"></li>
+<li>Le gratte-ciel<br><img src="images/Aide/Experts 2.png" width="600" height="750"><br><img src="images/Aide/Experts 2 bis.png" width="800" height="350"></li>
+<li>L'attaque du cobra<br><img src="images/Aide/Experts 3.png" width="600" height="750"><br><img src="images/Aide/Experts 3 bis.png" width="800" height="350"><br><img src="images/Aide/Experts 3 ter.png" width="600" height="250"><br><img src="images/Aide/Experts 3 quater.png" width="600" height="250"></li>
+<li>Sue-de-coq<br><img src="images/Aide/Experts 4.png" width="600" height="750"><br><img src="images/Aide/Experts 4 bis.png" width="800" height="350"></li>
+<li>Le rectangle vide<br><img src="images/Aide/Experts 5.png" width="600" height="750"><br><img src="images/Aide/Experts 5 bis.png" width="800" height="350"><br><img src="images/Aide/Experts 5 ter.png" width="600" height="50"></li>
+<li>Le cerf-volant<br><img src="images/Aide/Experts 6.png" width="600" height="750"><br><img src="images/Aide/Experts 6 bis.png" width="800" height="350"></li>
+<li>L'espadon (swordfish)<br><img src="images/Aide/Experts 7.png" width="600" height="750"><br><img src="images/Aide/Experts 7 bis.png" width="800" height="350"><br><img src="images/Aide/Experts 7 ter.png" width="600" height="50"></li>
+<li>XYZ-Wing (l'aigle et sa proie)<br><img src="images/Aide/Experts 8.png" width="600" height="750"><br><img src="images/Aide/Experts 8 bis.png" width="800" height="350"></li>
+<li>XY-Wing (l'aigle et sa proie)<br><img src="images/Aide/Experts 8 revue.png" width="600" height="750"><br><img src="images/Aide/Experts 8 bis revue.png" width="800" height="350"></li>
+<li>XY-Wing (l'aigle et sa proie)<br><img src="images/Aide/Experts 8 Diabolique.png" width="600" height="750"><br><img src="images/Aide/Experts 8 Diabolique bis.png" width="800" height="350"></li>
+</ul>
+Une seule variété est décrite pour chacune de ces méthodes sophistiquées (exception de l'aigle et sa proie, 3 fois). L'ensemble des variétés de ces méthodes, ainsi que toutes les autres méthodes sophistiquées (contre les impossibilités et les défauts d'unicité), sont  décrites à la fin de cette aide.
+<br><br> 
+</td>
+<td><h1><u><ol start="9"><li>Description de l'interface pour la résolution de grilles de sudoku par ordinateur et la génération de grilles (espace automatique)</u> :</h1></td>
+<td><h3>
+Cet écran est chargé quand l'utilisateur clique sur l'icône de connexion à cet écran <img src="images/Validationmethode.png" width="35" height="35">, dans l'écran d'accueil.<br>
+<u>L'écran de cet espace de création de grilles et de calcul par ordinateur est le suivant</u> :<br><br>
+<img src="images/Aide/Espace création.png">
+<h3>Cet espace est composé, du haut en bas de l'écran par :
+<ul>
+<li>Une 1<sup>ére</sup> ligne de 9 icônes pour les principales fonctions de base (impression, transfert vers l'espace de calcul manuel, bascule affichage des chiffres-candidats de la grille), pour la génération de grille, pour la gestion de grilles (enregistrement, suppression), pour le calcul par ordinateur (calcul complet ou calcul réduit) et enfin (icône optionnelle) pour le développement</li>
+<li>Une 2<sup>ème</sup> ligne de 9 icônes, dont 6 pour la gestion de 6 des 7 listes, 1 pour l'affichage de l'écran des filtres et options, 1 pour l'enregistrement des choix de cet écran des filtres et options, 1 pour l'indication du développeur de cette application de sudoku sur internet</li>
+<li>Le nom de l'archive dans laquelle se trouve la grille</li>
+<li>Le nom de la grille</li>
+<li>La grille proprement dite</li>
+<li>La zone des différents messages, dont, entre autres, la présentation du résultat de l'étape de calcul en cours, le suivi de la création de grille, l'affichage du résultat de la génération de grilles, les indications d'erreurs, le support au débogage, etc...</li>
+<li> La zone des listes surmontée de 3 icônes, pour la navigation dans la liste en haut et en bas, et pour l'impression de cette liste.</li>
+</ul>
+<br><br> 
+</td>
+<td><h1><u><ol start="10"><li>Signification des icônes de l'espace automatique</u></h1></td>
+<td><h2>
+<u>1<sup>ère</sup> ligne des 9 icônes du haut de l'écran, dont une icône optionnelle pour les développeurs (5 des icônes sont communes avec des icônes de l'espace manuel)</u> :<br><br>
+<img src="images/Impression.png" width="35" height="35"> Impression de la grille sans les listes<br>
+<img src="images/Validationmethode.png" width="35" height="35"> Retour dans l'espace de résolution manuelle, y compris avec certaines données, dont le résultat de calcul par ordinateur, ou la proposition de résoudre des grilles qui ont été créés manuellement (grilles issues de revues ou sur internet) ou de grilles ayant été générées par ordinateur. Le niveau de difficulté est alors celui de la dernière grille sélectionnée dans l'espace de résolution par ordinateur.<br>
+<img src="images/Basculeaffichage.png" width="35" height="35"> Bascule affichage des chiffres-candidats dans les cases de la grille : affiche ou pas les chiffres-candidats dans les cases de la grille. Une option dans l'écran des filtres et options (voir ci-après) permet de ne faire apparaître que les cases ayant un nombre de chiffres-candidats inférieurs à un nombre donné<br> 
+<img src="images/Sauvegarde.png" width="35" height="35"> Enregistrement de la grille en cours dans le webstorage de l'utilisateur, avec enregistrement éventuel de sa nouvelle archive, celle dont le nom est  affiché.  Cela fait apparaître la grille en fin de la liste des grilles de l'archive en cours (avec éventuellement le numéro de l'étape en cours). Il n'est pas possible d'enregistrer dans les 4 archives de base, une archive auxiliaire étant créée pour cela, appelée "Nouvelle archive". <u><b>Attention</b></u> : 2 grilles différentes peuvent avoir le même nom; mais ce n'est pas recommandé.<br> <br> 
+<img src="images/Suppression.png"  width="35" height="35"> Suppression d'une grille personnelle. Après suppression, c'est la dernière grille de la liste des grilles enregistrées dans l'archive qui apparaît à l'écran.  Si la grille supprimée est la dernière de l'archive, cette archive est supprimée. Il n'est pas possible de supprimer des grilles des 4 archives de base.<br><br>
+<img src="images/calcul.png" width="35" height="35"> Calcul automatique d'une grille utilisant toutes les méthodes de résolution disponibles, calcul à partir de l'étape en cours (souvent depuis le début, pour un calcul complet), avec affichage final de la liste des étapes et de la grille remplie (si solution sans hypothèse), avec indication si la grille est correcte.<br> 
+<img src="images/calculreduit.png" width="35" height="35"> Calcul automatique réduit d'une grille n'utilisant qu'une partie des méthodes de résolution disponibles, parmi les plus simples (nombre sélectionné dans l'écran des Filtres et Options)<br>
+<img src="images/Generation.png" width="35" height="35"> Génération aléatoire d'une grille personnelle à l'utilisateur. Génération de grille, ex nihilo, de manière aléatoire, selon des caractéristiques définies dans l'écran des Filtres et Options.<br>
+<img src="images/doigt-main.png" width="35" height="35"> Icône optionnelle visible en mode développement (à valider dans l'écran des filtres et options), pour pouvoir effectuer un test externe. Cette icône est visible si l'option correspondante est cochée dans l'écran des filtres et options. <u>Attention</u> de redémarrer l'application pour valider cette option si elle est cochée. Cette procédure est nécessaire pour toute modification du programme, pour un développeur souhaitant corriger le programme.<br><br>
+<u>2<sup>ème</sup> ligne des 9 icônes du haut de l'écran</u> :<br><br>
+<img src="images/Methodes.png" width="35" height="35"> Accès à la liste des méthodes de résolution disponibles dans ce programme, affichée sous le diagramme de la grille</br>
+<img src="images/Méthodesunicité.png" width="35" height="35"> Accès à la liste des méthodes de résolution disponibles dans ce programme permettant d'éviter des défauts d'unicité, affichée sous le diagramme de la grille</br>
+<img src="images/Etapes.png" width="35" height="35"> Accès à la liste des étapes de calcul (résolution manuelle ou résolution par le programme), affichée sous le diagramme de la grille<br>
+<img src="images/Variantes.png" width="35" height="35"> Accès à la liste des variantes de la méthode de résolution sélectionnée, affichée sous le diagramme de la grille<br>
+<img src="images/Hypotheses.png" width="35" height="35"> Accès à la liste des hypothèses nécessitées par des blocages, quand  aucune méthode disponible n'est applicable, message affiché sous le diagramme de la grille<br>
+<img src="images/Archivage.png" width="35" height="35"> Accès à la liste des archives, affichée sous le diagramme de la grille<br>
+<img src="images/Contraintes.png" width="35" height="35"> Accès à l'écran des filtres et options, affiché sous le diagramme de la grille<br><br>
+<img src="images/exit.png" width="35" height="35"> Sauvegarde des filtres de calcul et de génération, et des options, pour une utilisation ultérieure. Cette <u><b>icône en forme de chapeau</b></u> <img src="images/exit.png" width="35" height="35">&nbsp; permet d'enregistrer la configuration en cours : archive, grille, tableau des Filtres et Options.<br>
+<br><br>
+La liste des grilles n'est pas accessible par une icône, mais par la sélection d'une archive, dans la liste des archives, ce qui fait apparaître la liste des grilles de cette archive, puis par la sélection d'une grille dans cette archive.<br><br>
+Un calcul, complet ou réduit (en cliquant sur l'une des 2 icônes de calcul), n'est pas possible pendant la saisie d'une nouvelle grille. Il faut pour cela sélectionner auparavant la grille dans la liste des grilles.<br>
+<br>Certaines méthodes, lorsqu'elles sont sélectionnées avec peu de cases restantes, en particulier les chaînes du Tigre (AIC-Chain, XY-Chain et ALS Chain), peuvent déterminer de très nombreuses variantes, parfois plusieurs centaines.<br>
+<br><u>Attention</u> : Lors du survol d'une icône, celle-ci se dilate et un message en jaune apparaît en haut et à gauche de l'écran, indiquant la signification de cette icône. Cliquer pour activer cette icône, quand ce message en jaune apparaît.
+</td>
+<td><h1><u><ol start="11"><li>La zone des messages</u></h1></td>
+<td><h2>
+La zone des messages contient les messages afférents à l'opération en cours, parmi les opérations suivantes :
+<ul><li>Nom de la grille en cours (si sélection ou génération de grille)</li>
+<li>Etape en cours avec explications spécifique et générale de la méthode utilisée à cette étape</li>
+<li>Résultat d'un calcul, avec indication si la grille est correcte et affichage de la signature des hypothèses s'il y en a eu : H=hypothèse, E=hypothèse avortée (cas des hypothèses en cascade), U=Défaut d'unicité rectangle évité, V=Défaut d'unicité bug+1 évité</li>
+<li>Résultat d'une variante</li>
+<li>Affichage de la liste des méthodes applicables avec leurs nombres de variantes.</li>
+<li>Résultat d'une hypothèse</li>
+<li>Explication d'un archivage</li>
+<li>Les crashs pour impossibilité</li>
+<li>Les crashs pour défaut d'unicité et les méthodes pour les éviter</li>
+<li>Utilisation pour le débogage</li>
+</ul>
+</td>
+
+<td><h1><u><ol start="12"><li>Les 7 listes (Méthodes, Méthodes unicité, Etapes, Variantes, Hypothèses, Archives, Grilles)</u></h1></td>
+<td><h2>
+<u>Ligne des icônes au-dessus de chacune des listes</u> :<br>
+<img src="images/arrow-down-icon.png" width="35" height="35"> Navigation bas dans une liste<br> 
+<img src="images/arrow-up-icon.png" width="35" height="35"> Navigation haut dans une liste<br> 
+<img src="images/Impression.png" width="35" height="35"> Affichage plein écran de la liste pour impression de cette liste<br><br>
+<u>Icône supplémentaire de la liste des archives</u> : <img src="images/reinitarchive.png" width="35" height="35"> produisant une réinitialisation générale des archives, revenant aux 4 archives de base et supprimant toutes les archives personnelles. Il faut, pour activer cette fonction avoir obtenu une autorisation préalable sélectionnée dans l'écran des filtres et options, qui a été validée en cliquant sur l'icône en forme de chapeau <img src="images/exit.png" width="35" height="35">. <u><b>Attention, danger</b></u> : toutes les archives créées par l'utilisateur sont supprimées avec réinitialisation des seules 4 archives de base.<br><br> 
+<u>Icône supplémentaire de la liste des variantes</u> : <img src="images/Coupe rouge.png" width="35" height="35"> permettant de montrer la grille sans les chiffres éliminés en rouge, et après validation des solos isolés.<br><br>
+
+Sous <u>la grille sudoku</u> sont empilées, de manière superposée, les 7 listes et l'écran des "Filtres et Options". Un clic gauche sur une des 6 icônes de liste entraîne l'affichage correspondant. La liste Grilles, elle, ne peut être sélectionnée qu'en cliquant sur son nom dans l'archive qui la contient. Chaque élément d'une liste peut être ensuite sélectionné en cliquant directement dessus, ou en utilisant les 2 icônes de navigation.<br><br>
+Un clic gauche sur l'icône d'impression d'une liste entraîne l'affichage plein écran de cette liste avec, en haut de cet écran annexe 2 liens, l'un pour le retour à l'écran principal, l'autre pour imprimer cet écran annexe.<br><br>
+Sélection dans les 7 listes par clic gauche sur l'icône correspondante (6 listes : <img src="images/Methodes.png" width="35" height="35"> <img src="images/Méthodesunicité.png" width="35" height="35"> 
+ <img src="images/Etapes.png" width="35" height="35">  <img src="images/Variantes.png" width="35" height="35"> 
+ <img src="images/Hypotheses.png" width="35" height="35"> <img src="images/Archivage.png" width="35" height="35">
+) ou par clic sur son nom dans le contenu d'une archive (liste des grilles) :
+
+<ul><li><u>La sélection d'une grille</u>, par clic sur son nom dans la liste des grilles d'une archive, entraîne l'affichage de son contenu dans le diagramme, son identification par l'affichage de son titre dans la zone de titre et dans la zone de messages et l'éclairage en blanc de son nom dans la liste affichée des grilles. Et la liste des étapes apparaît avec une seule étape dite 0 avec le mention "Grille initiale". L'enregistrement d'une grille  ajoute une ligne de la liste dans l'archive contenant cette grille. Si la grille est sélectionnée à une étape de calcul par ordinateur, elle est sauvegardée en la copiant avec son nom  auquel a été ajouté le numéro de l'étape correspondant.<br><br></li>
+<li><u>La sélection d'une méthode</u> dans la liste suivante entraîne le calcul et l'affichage de toutes ses variantes applicables pour la grille en cours, à l'étape en cours. Si la méthode est non applicable, la liste des variantes n'apparaît pas, un message en indiquant la raison.<br><br>
+
+Il faut distinguer variante, qui est une des solutions obtenues avec la méthode sélectionnée, et variété, qui est en fait une sous-méthode de la méthode. Par exemple, la méthode "AIC-Chain" (ou approche du tigre) possède 4 variétés : AIC-Type I, AIC-Type II, AIC-loop discontinu et AIC-loop continu. Pour certaines méthodes, il existe même des combinaisons de variétés.<br><br>
+
+<br><br><img src="images/Aide/Méthodes.png"><br><br>
+La sélection de la première ligne de liste des méthodes appelée "Toutes les méthodes applicables" entraîne le calcul de toutes les méthodes et l'affichage de celles qui sont applicables, avec leurs nombres de variantes, dans le message sous la grille, ainsi que la visualisation en rouge sur le diagramme, de tous les chiffres-candidats susceptibles d'être éliminés avec l'ensemble de ces méthodes applicables, avec toutes leurs variantes. La liste des variantes fait donc apparaître l'ensemble des variantes de toutes les méthodes applicables<br><br>
+<br><br>
+Voici un exemple de la méthode dite "Toutes les méthodes applicables" :
+<br><br><img src="images/Aide/toutes les méthodes bis.png"><br><br>
+<br><br><br><br><br>
+Et le début de cette liste de variantes de toutes les méthodes applicables (18 sur 58) :
+<br><br><img src="images/Aide/Liste de méthodes applicables.png">
+<br><br><img src="images/Aide/Méthodesunicité.png"><br><br>
+La sélection de la première ligne de liste des méthodes appelée "Toutes les méthodes unicité applicables" entraîne le calcul de toutes les méthodes unicité et l'affichage de celles qui sont applicables, avec leurs nombres de variantes, dans le message sous la grille, ainsi que la visualisation en rouge sur le diagramme, de tous les chiffres-candidats susceptibles d'être éliminés avec l'ensemble de ces méthodes unicité applicables, avec toutes leurs variantes. La liste des variantes fait donc apparaître l'ensemble des variantes de toutes les méthodes unicité applicables<br><br>
+<br><br>Ceci entraîne l'affichage de la grille avec les chiffres éliminés en rouge, du fait de l'application de toutes ces méthodes applicables, dont la liste des méthodes avec leur nombre de variantes apparaît dans le message sous la grille,  suivie de la liste détaillée complète des variantes.<br><br>
+Il est possible de faire disparaître ces chiffres rouges, en cliquant sur l'icône  <img src="images/Coupe rouge.png" width="35" height="35"> parmi les 4 icones en haut de la liste des variantes. Le programme élimine aussi tous les chiffres des cases vues par des solos isolés, apparus après élimination des chiffres rouges.<br><br>
+Voici un exemple de la méthode dite "Toutes les méthodes unicité applicables" :
+<br><br><img src="images/Aide/toutes les méthodes unicité bis.png"><br><br>
+Et la liste de variantes de toutes les méthodes unicité applicables :
+<br><br><img src="images/Aide/Liste de méthodes unicité applicables.png" width="800" height="500"><img src="images/Aide/Liste de méthodes unicité applicables 2.png" width="802" height="200"><br><br>
+<br><br>La sélection d'une de ces méthodes ou  de ces méthodes unicité entraîne l'affichage de la liste des variantes applicables de cette méthode, et l'affichage en rouge des chiffres éliminés par l'ensemble des méthodes applicables.
+<br><br>Il est possible ensuite de visualiser la grille sans ces chiffres rouges éliminés en cliquant sur l'icône <img src="images/Coupe rouge.png" width="35" height="35"> en haut de la liste détaillée des variantes de cette méthode, ce qui élimine aussi les chiffres dans les cases voyant les solos isolés apparus.
+<br><br>En cliquant sur une des variantes dans cette liste, on obtient le résultat pour cette variante.<br><br>
+<u>La sélection d'une étape</u> affichée après un calcul, donne les indications suivantes : résultat sur la grille de la méthode utilisée lors de cette étape, avec affichage en rouge des chiffres candidats éliminés et les chiffres concernés par la ou les éliminations de chiffres candidats apparaissent sur fond vert. Dans la zone des messages se trouve l'explication de la méthode utilisée :  explication spécifique du cas traité, et explication générale de la méthode.<br><br> 
+Voici un exemple de la méthode "l'attaque du cobra" choisi à l'étape 13 de la solution de la grille dénommée "Al Escargot", dans l'archive "20 grilles de la littérature de sudoku".<br><br>
+<img src="images/Aide/Al Escargot Etape 13.png"><br><br>
+Cette étape fait partie du début de la liste des étapes suivantes :
+<br><br><img src="images/Aide/Al Escargot étapes bis.png" width="500"><br><br>
+<u><b>ATTENTION</b></u> : il est donc possible de visualiser une des variantes de la liste obtenue en cliquant sur une méthode (ou même en  cliquant sur la liste des variantes de toutes les méthodes). Mais ceci n'est pas possible s'il s'agit d'une sélection à une étape de calcul donnée, où seul l'ensemble des variantes peut être visualisé. Pour  obtenir la visualisation d'une variante particulière de la liste des variantes d'une méthode, il faut au préalable enregistrer la grille à une étape de calcul particulière, puis cliquer sur la liste des méthodes de cette grille enregistrée. 
+<br><br>En fait, il s'agit là d'un bug identifié et non résolu, dont il existe un palliatif qui consiste donc à enregistrer la grille à une étape de calcul donnée, avant de sélectionner une méthode efficace pour en visualiser toutes les variantes.
+<br><br>
+<u>Dans la liste des hypothèses</u>, un clic sur une hypothèse entraîne l'affichage de la liste des étapes de cette hypothèse et, dans la zone des messages, le résultat final de cette hypothèse, c'est-à-dire une solution, ou un crash pour impossibilté, ou un crash pour défaut d'unicité. Avec également, la correction appliquée à l'hypothèse précédente.<br><br>
+<br><br><img src="images/Aide/Hypothèses.png"><br><br>
+<u>Dans la liste des archives</u>, La sélection d'une archive</u> entraîne l'affichage de la liste des grilles de cette archive et, dans la zone des messages, l'indication du chargement de cette archive. Le changement d'archive (par navigation ou clic gauche sur l'archive) enregistre automatiquement l'archive en cours avec ses modifications.<br><br>
+<br><br><img src="images/Aide/Archives.png">
+</td>
+<td><h1><u><ol start="13"><li>L'écran des filtres et options</u></h1></td>
+<td><h2>
+L'écran des "Filtres et options", auquel l'utilisateur accède en cliquant sur l'icône <img src="images/Contraintes.png" width="35" height="35">, en haut de l'écran, contient les éléments suivants : 
+<br>
+<ul>
+<li>3 filtres pour <u>la génération de grilles</u> : nombre de cases affectées, nombre maximum de cases par chiffre dans une même zone sudoku (ligne ou colonne ou bloc), nombre maximum d'échecs autorisés (il faut alors  relancer la génération).<br><br></li>
+<li>2 filtres pour <u>le calcul d'une grille</u> : nombre de méthodes du calcul réduit, longueur maximum des chaines de la méthode "Chaîne ALS-Chain" (obsolète), 
+nombre maximum d'itérations de la méthode "Chaîne ALS-Chain", case initiale de la méthode "Chaîne ALS-Chain" (aucune case initiale veut dire toutes les cases) (obsolète), longueur maximum des chaines de la méthode "la griffe du tigre (XY-Chain)" (obsolète), longueur maximum des chaines de la méthode "la forteresse maxilien" (obsolète), longueur maximum des chaines de la méthode "3D Medusa" (obsolète).
+<br><br></li>
+<li><u>4 options de fonctionnement du programme</u><br><br></li>
+<ul>
+<li>Option d'<u>activation du clavier virtuel</u> : la saisie du titre de la grille ou de celui d'une nouvelle archive, peut se faire avec un clavier virtuel qui apparaît à l'écran quand on clique dans une des 2 zones de saisie (pour une utilisation sans clavier).<br><br></li>
+<li>Option d'<u>autorisation de réinitialiser les archives</u>, ce qui revient à revenir aux 4 archives de base. Cette option permet donc de remettre à zéro toutes les archives; elle doit être confirmée en cliquant sur l'icône de validation des Filtres et Options <img src="images/exit.png" width="35" height="35"> (icône en forme de chapeau). L'exécution de cette réinitialisation des archives est ensuite effectuée dans l'écran des archives, en cliquant sur l'icône de réinitialisation des archives <img src="images/reinitarchive.png" width="35" height="35">.<br><br></li>
+<!-- <li>Option de <u>filtrage des solutions (obsolète)</u>. Si cette option est validée, les solutions de la méthode testée sont filtrées, c'est-à-dire que les solutions fournissant des solutions déjà trouvées par une variante précédente, ne sont pas affichées dans la liste des variantes. Ceci évite d'afficher trop de solutions, en éliminant les solutions redondantes.<br><br></li>-->
+<li>Option de travail en <u>Mode développement</u>. Si cette option est validée, il est possible de modifier le code source, grâce à une icône supplémentaire, pour démarrer un calcul sur une portion de code externe à tester. Cette icône est inhibées en mode production. <u>Attention</u>, La validation du mode développement, qui est effectuée en la validant puis en cliquant sur l'icône en forme de chapeau <img src="images/exit.png" width="35" height="35">, n'est effective qu'en quittant le programme de sudoku puis en le rappelant.<br><br></li>
+<li>Option donnant le nombre maximum de chiffres-candidats pouvant être visualisés dans une case, avec clic gauche sur l'icône Bascule <img src="images/Basculeaffichage.png" width="35" height="35">.</li> 
+</ul><br><br>
+La configuration des 3 filtres de génération, des 2 filtres de calcul, des 4 options (activation du clavier virtuel, autorisation de réinitialiser les archives, travail en mode de développement, nombre de chiffres-candidats affichés),
+ est validés par un clic gauche sur l'icône de validation en haut de l'écran <img src="images/exit.png" width="35" height="35"> (icône en forme de chapeau), ce qui valide aussi la grille dans son archive. Une fois la configuration sélectionnée, il faut, pour l'activer, sortir du programme pour ensuite le recharger.<br><br>
+Selon les valeurs des filtres, le temps de génération ou de calcul est plus ou moins long, avec, en contrepartie, une plus ou moins bonne précision. Certaines méthodes utilisent des fonctions récursives (fonctions s'appelant elles-même), et une récursivité trop profonde peut générer une saturation de pile et un dépassement de temps.<br><br>
+<br><br><img src="images/Aide/filtres et options.png" width="1000" heigth="700"><br><br>
+Une fois la configuration effectuée, la valider en cliquant sur l'icône <img src="images/exit.png" width="35" height="35"> pour l'enregistrer, puis sortir du programme avant de le rappeler pour que cette configuration soit active.
+</td>
+<td><h1><u><ol start="14"><li>Le calcul de grilles de sudoku par ordinateur</u></h1></td>
+<td><h2>
+<u><b>Attention : toujours sélectionner la grille dans la liste des grilles avant de lancer un calcul de cette grille.</b></u><br><br>
+Un calcul par ordinateur est obtenu en cliquant sur l'une des 2 icônes de calcul (calcul complet <img src="images/calcul.png" width="35" height="35"> et calcul réduit <img src="images/calculreduit.png" width="35" height="35">). Le programme affiche alors le résultat, et permet de visualiser les étapes de calcul ayant permis d'aboutir à ce résultat, dans une liste des étapes sous le diagramme. Le programme indique aussi si la grille est correcte, à savoir qu'elle fournit une solution valide et une seule.
+Au cours ou en fin de calcul, qu'il soit manuel ou par ordinateur, l'utilisateur peut revenir sur les différentes étapes de calcul précédentes, en cliquant d'abord sur l'icône sélectionnant la liste des étapes <img src="images/Etapes.png" width="35" height="35">, puis en cliquant sur une de ces étapes, visualisant l'effet de l'opération à cette étape :
+<ul>
+<li>Méthode utilisée à cette étape expliquée sous le diagramme, en 2 parties : explication spécifique de la manière dont la méthode est appliquée sur le diagramme, et explication générale indiquant le principe de la méthode utilisée. Ceci n'est pas intéressant pour un calcul en manuel puisqu'il s'agit alors uniquement de l'effet du choix d'un chiffre dans une case.</li>
+<li>Effet sur le diagramme de la méthode utilisée, à savoir l'indication en rouge des chiffres-candidats éliminés à cette étape, et l'affichage sur fond vert des chiffres concernés par l'élimination.</li>
+<li>Certaines cases restent vides et ne font pas apparaître leurs chiffres-candidats. Pour ce faire, il faut appuyer une première fois sur l'icône <img src="images/Basculeaffichage.png" width="35" height="35"> en haut de l'écran, ce qui ne fait apparaître sur le diagramme que les cases ayant un seul chiffre, puis, en appuyant une une seconde fois sur cette icône, ce qui fait réapparaitre tous les chiffres-candidats, y compris ceux en rouge qui sont éliminés. Mais les chiffres en vert concernés par la méthode de l'étape en cours, ne sont plus en vert.</li>
+</ul>
+Ceci permet à un utilisateur de comprendre, étape par étape, comment la grille a été résolue.<br><br>
+A partir de la grille initiale à l'étape 0, l'ordinateur calcule, en scrutant, à chaque étape, les méthodes, depuis la plus simple jusque la plus compliquée. Si une méthode donne un résultat, parce que efficace, elle est exécutée, avant de passer à l'étape suivante. Si aucune méthode n'est efficace, l'ordinateur fait alors une hypothèse aléatoire en imposant un des chiffres candidats à une case choisie aléatoirement. Il peut être nécessaire de faire des hypothèses en cascade, à chaque blocage dû à l'impossibilité de trouver une méthode efficace.<br><br>
+Le calcul se poursuit jusqu'à, soit une impossibilité, comme une case n'ayant plus de chiffre candidat (5 cas d'impossibilité ont été répertoriés dans le programme), soit une solution.<br><br>
+Si ce résultat (impossibilité ou solution) a nécessité de faire des hypothèses, il faut corriger la dernière hypothèse effectuée avant cela. Si une solution est trouvée, alors qu'une solution avait déjà été trouvée précédemment, le programme s'arrête car la grille est fausse par défaut d'unicité.<br><br>
+Le calcul continue jusque épuisement de toutes les hypothèses, après correction de toutes les hypothèses effectuées.<br><br>
+Dans ce cas, si une solution avait été trouvée précédemment, la grille est correcte avec une seule solution, sinon la grille est fausse car elle n'a pas de solution.
+<br><br>Le temps de calcul moyen des grilles les plus compliquées, nécessitant de faire des hypothèses, est de 5 minutes sur un simple ordinateur de bureau, et de 30 minutes sur un téléphone portable. 
+<td><h1><u><ol start="15"><li>L'application ponctuelle des méthodes de résolution</u></h1></td>
+<td><h2>
+Une méthode de résolution efficace consiste, quand elle est appliquée à une grille de sudoku, à une étape de calcul donnée, à éliminer des chiffres candidats, qui apparaissent en rouge dans la grille. Mais il est possible qu'une autre méthode soit aussi applicable, ou même que la méthode en question puisse être appliquée d'une autre manière (variantes d'une méthode). Ceci montre qu'il existe plusieurs manières différentes de résoudre une grille.<br><br>
+<u><b>L'ensemble des méthodes fonctionnent sur le principe suivant : à partir d'une hypothèse implicite, on utilise la méthode pour aboutir à une impossibilité, ce qui invalide l'hypothèse. Ceci permet d'éliminer les chiffres concernés par l'hypothèse.</b></u><br><br>
+<u><b>Une autre notion importante est celle de lien fort : 2 cases sont reliées en lien fort sur un chiffre-candidat, si ce chiffre-candidat n'apparaît dans aucune autre case d'une zone sudoku commune à ces 2 cases. Il ne peut apparaître non plus dans aucune autre cases des autres zones sudoku communes à ces 2 cases.</b></u> Cette notion peut être étendu au cas de plus de 2 cases : 3, 4, 5. Si un lien n'est pas fort, il est faible.<br><br>
+Pour tester si une méthode est efficace pour éliminer des chiffres-candidats, il faut cliquer sur l'icône sélectionnant la liste des méthodes <img src="images/Methodes.png" width="35" height="35">, puis, dans la liste des méthodes qui apparaît, cliquer sur la méthode à tester. Si cette méthode est efficace, et même de différentes manières, une liste de ces différentes variantes apparaît. On peut alors sélectionner ces variantes, en navigant dans la liste de ces variantes, soit avec les icônes haut et bas, soit en cliquant directement sur la variante à visualiser.<br><br> 
+Il existe donc, comme indiqué ci-dessus, une ligne particulièrement intéressante dans la liste des méthodes, la première ligne intitulée "Toutes les méthodes applicables". Quand on clique dessus, une liste de toutes les variantes de toutes les méthodes applicables apparaît : un message sous la grille répertorie toutes ces méthodes avec leurs nombres de variantes, précédant la liste de toutes ces variantes de toutes ces méthodes. Que l'on peut ensuite explorer. Et la grille contient tous les chiffres rouges (donc à éliminer) de toutes les variantes de toutes ces méthodes.<br><br>
+<br><br>
+En voici un autre exemple :
+<br><br><img src="images/Aide/toutes les méthodes.png"><br><br>
+Si aucune méthode n'est efficace, il faut se résoudre à faire une hypothèse, qui consiste à sélectionner aléatoirement un chiffre dans une case, en général une case à 2 chiffres candidats.<br><br>
+Si une hypothèse n'aboutit pas le calcul se terminant par une impossibilité, elle est corrigée. Une hypothèse fausse induit la suppression de toutes les hypothèses ultérieures dans le calcul.<br><br> 
+Le niveau de difficulté des grilles avec hypothèses est donc très difficile voire diabolique et variable selon la quantité des hypothèses effectuées aléatoirement. Ainsi, la grille finlandaise "Al Escargot" nécessite en moyenne 12 modifications pour explorer toutes les possibilités et garantir qu'elle est correcte. Mais, en prenant des hypothèses judicieuses, elle peut être résolue en 2 hypothèses seulement. C'est ce qui arrive quand on choisit d'effectuer le calcul en 2 passes : la première en effectuant des hypothèses aléatoires, la deuxième en choisissant les hypothèses les plus judicieuses issues de ce premier calcul, à savoir le résultat d'une case ayant beaucoup de chiffres candidats.<br><br>
+La résolution d'une grille de sudoku consiste donc à éliminer, par étapes successives, dans les cases de la grille, les chiffres candidats démontrés comme faux par une des méthodes d'élimination existantes dans ce programme (il en existe  d'autres, n'ayant pas été implantées). S'il n'y a pas de chiffre éliminé en rouge lors de l'application d'une méthode, c'est que cette méthode est inefficace, comme indiqué dans un message sous la grille.<br><br>
+Si une solution est trouvée sans hypothèse, elle est validée. Si au contraire, une solution est trouvée mais avec hypothèses, le calcul continue cependant, en modifiant la dernière hypothèse effectuée. Le calcul continue jusqu'à ce qu'il n'y ait plus d'hypothèse possible. Mais si entre temps, une deuxième solution est trouvée, prouvant que la solution n'est pas unique, c'est que la grille est fausse.<br><br>
+En fin de calcul une liste d'hypothèses est générée, et un message est affiché indiquant si la grille est correcte avec une solution unique (ni impossible, ni en défaut d'unicité). Dans la littérature du sudoku, une grille à solution unique est aussi appelée "puzzle bien formé".<br><br>
+</td>
+<td><h1><u><ol start="16"><li>La création de grilles de sudoku (dans l'espace manuel)</u></h1></td>
+<td><h2>
+Il existe, comme expliqué précédemment,3 types de grilles dans ce programme :
+<ul>
+<li>Des grilles disponibles dans le programme, chargées lors de la première utilisation, ou lors d'une réinitialisation générale. Ces grilles sont disponibles dans 4 archives, dites de base, avec les dénominations suivantes : <u>20 grilles de la littérature de sudoku</u>, <u>73 grilles difficiles générées</u> (73 grilles originales, créées avec la génération aléatoire de ce programme), <u>50 grilles faciles générées</u> (50 grilles créées avec la génération aléatoire de ce programme), <u>9 grilles AIC</u> extraites du numéro 11 de la revue Sudoku Grand Maître (étude approfondie de la méthode AIC-Chain, ou approche du tigre). Ces archives ne sont ni modifiables ni effaçables.</li>
+<li>Des grilles extérieures à saisir manuellement (processus de création de grille), en cliquant sur l'icône de création <img src="images/Nouvellegrille.png" width="35" height="35"> dans l'espace manuel. utilisant un puissant outil de saisie, permettant d'établir une grille en moins de 30 secondes.</li>
+<li>Des grilles générées aléatoirement par ce programme (processus de génération de grille vu au chapitre suivant), en cliquant sur l'icône de génération dans l'espace automatique <img src="images/Generation.png" width="35" height="35">.</li>
+</ul>
+L'utilisateur peut disposer de ces  2 derniers types de grilles dans des archives qui lui sont propres, dans lesquelles il peut aussi recopier des grilles des 4 archives de base.<br><br>
+Une grille est chargée si l'utilisateur clique sur son nom dans une liste de grilles d'une archive. Cette grille, une fois chargée, est disponible dans le diagramme, avec son nom en titre, et le nom de l'archive qui la contient.<br><br>
+Le mode création est généré quand on clique avec le bouton gauche de la souris sur l'icône de création de grille <img src="images/Nouvellegrille.png" width="35" height="35"> (dans l'espace manuel). Dans ce cas, une grille vierge apparaît avec le titre N. On renseigne ce titre du nom que l'on veut donner à cette nouvelle grille. Il faut aussi renseigner le nom de l'archive dans laquelle cette grille sera chargée. Par défaut, si l'archive est une des 4 archives de base, l'archive utilisée s'appellera "Nouvelle archive", en lieu et place de l'archive de base contenant la grille. Si cette archive existe déjà, la grille sera ajoutée à cette archive; sinon, l'archive est créée.<br><br>
+Pour créer cette nouvelle grille, vierge au départ, on la remplit en sélectionnant un chiffre du tableau interne qui apparaît dans une case quand la souris la survole. Ce tableau contient la liste des chiffres-candidats de cette case; au début, il s'agit de tous les chiffres de 1 à 9 puis, au fur et à mesure que la grille se remplit, le nombre de chiffres-candidats des cases sélectionnées diminue.<br><br>
+Si on s'est trompé lors d'une sélection, il faut sortir de la case en déplaçant la souris, pour ensuite y revenir, et double-cliquer avec le bouton gauche, pour dévalider ce chiffre et revenir ainsi à la situation précédente.<br><br>
+On peut aussi cliquer avec le bouton droit de la souris sur un chiffre du tableau interne d'une case, ce qui désélectionne ce seul chiffre : le tableau interne ne contiendra plus ce chiffre. Mais cette opération est peu intéressante pour créer une grille.<br><br>
+En fin de création de la grille, et à condition d'avoir renseigné au moins 17 cases, on sauvegarde cette grille en cliquant avec le bouton gauche de la souris sur l'icône de sauvegarde <img src="images/Sauvegarde.png" width="35" height="35"> (qui existe dans les 2 espaces manuel et automatique), parmi les icônes principales en haut de l'écran à gauche. La grille apparaît alors à la fin de la liste des grilles de l'archive. Cela désactive le mode création.<br><br> 
+</td>
+<td><h1><u><ol start="17"><li>La génération de grilles de sudoku (dans l'espace automatique)</u></h1></td>
+<td><h2>
+La procédure de génération de grille est la suivante :
+<ul>
+<li>Cliquer sur l'icône de génération de grille en haut de l'écran <img src="images/Generation.png" width="35" height="35">. Ceci met en place de manière aléatoire des chiffres dans un nombre limité de cases de la grille. Ce nombre est initialisé dans l'écran des "Filtres et Options", ainsi que le nombre maximum de cases dans une même zone sudoku (afin de bien répartir les cases). A chaque case initialisée, le programme vérifie que cela n'engendre pas d'impossibilité immédiate, ce qui invalide cette affectation de case. A l'issue, de cette implantation de cases sans impossibilité immédiate, un calcul de cette première grille, dite brute de fonderie, est effectué afin de vérifier qu'elle ne génère pas d'impossibilité ni de défaut d'unicité. Après une attente normalement peu importante, une grille générée apparaît, avec, dans la zone des messages, une indication sur le nombre d'échecs dus à une impossibilité et le nombre d'échecs dus à un défaut d'unicité. La grille est en général correcte et l'indication "Grille générée" apparaît en titre. Si l'attente est prolongée (plus de 2 minutes), c'est que le programme a un grand nombre d'échecs (pour impossibilité ou défaut d'unicité). Si ce nombre d'échecs dépasse la limite autorisée (par défaut, 60), la grille générée qui apparaît est très probablement fausse et il faut relancer la génération de grille en cliquant sur l'icône correspondante. Cette opération est donc longue et peut provoquer un dépassement de temps système (dit "Time Out"); dans ce cas, laisser continuer le calcul jusqu'à son terme sans rien faire.<br><br></li>
+<li>Si la grille générée est correcte, renseigner le titre de la grille remplaçant le titre "Grille générée", dans la zone de titre, puis cliquer sur l'icône d'enregistrement en haut de l'écran <img src="images/Sauvegarde.png" width="35" height="35"> (matérialisée par une forme de disquette)<br><br></li>
+<li>Cliquer sur l'archive de cette grille, dans la liste des archives<br><br></li>
+<li>Sélectionner cette nouvelle grille en cliquant sur son nom dans la liste des grilles</li>
+<li>Lancer un calcul pour vérifier cette grille, puis inspecter les étapes de calcul<br><br></li>
+</ul>
+<br><br><br>
+En fin de génération de grille, un message sous le diagramme de la grille indique si  la grille est correcte et combien d'échecs ont été subis lors de cette génération.<br>
+Il n'est pas possible de déterminer à priori si la grille qui va être générée sera facile, difficile, ou très difficile.<br>
+En moyenne, le programme génère 3 fois plus de grilles faciles que de grilles difficiles.<br>
+Et il faut en moyenne 20 échecs pour trouver une grille générée valide. Il faut être patient pendant la génération.<br>
+La grande majorité des échecs est due à une impossibilité, quelques cas étant dus à un défaut d'unicité.<br> 
+Si le nombre d'échecs est trop important, il faut recommencer une génération de grille<br>
+Même si la grille finale est fausse, elle est enregistrée et peut être analysée. C'est une source très intéressante de cas d'études.<br>
+Par défaut, le nombre d'échecs est limité à 60 (même si ce chiffre peut être modifié dans l'écran des Filtres et Options).<br>
+Cette limite du nombre d'échecs est atteinte, en moyenne, une fois sur deux tentatives.
+<br><br>
+Voici 2 exemples de grille générées, l'une après 60 échecs, l'autre après 1 échec :
+<br><br><img src="images/Aide/Grille générée limite.png"><br><br>
+<br><br><img src="images/Aide/Grille générée.png"><br><br>
+En résumé, la génération de grille se déroule en 5 étapes : générer, renommer, enregistrer, sélectionner et calculer.<br><br>
+<br><br>
+</td>
+<td><h1><u><ol start="18"><li>Les crashs pour impossibilité</u></h1></td>
+<td><h2>
+Les situations d'impossibilité, générant un crash sont les suivantes :<br>
+<ul><li>Aucun chiffre candidat dans une case (case vide)</li>
+<li>Doublon, le même chiffre affecté apparaîssant dans 2 cases différentes d'une même zone sudoku (ligne ou colonne ou bloc)</li>
+<li>Nombre de chiffres candidats dans des cases d'une même zone sudoku, inférieur au nombre de cases où ils se trouvent, comme par exemple 2 seuls chiffres dans 3 cases d'une même zone sudoku</li>
+<li>Chiffre manquant dans une zone sudoku</li>
+<li>2 chiffres candidats dans une seule case d'une zone sudoku et pas dans les autres cases de cette zone</li></ul>
+Voici 5 exemples de crash pour impossibilité, un pour doublon, un pour un chiffre absent dans une colonne,  un pour 2 chiffres seuls dans une case, un pour 2 chiffres dans 3 cases, un pour 3 chiffres dans 4 cases:
+<br><br><img src="images/Aide/crash doublon.png"><br><br>
+<br><br><img src="images/Aide/crash chiffre absent dans une colonne.png"><br><br>
+<br><br><img src="images/Aide/crash 2 chiffres seuls dans une case.png"><br><br>
+<br><br><img src="images/Aide/crash 2 chiffres dans 3 cases.png"><br><br>
+<br><br><img src="images/Aide/crash 3 chiffres dans 4 cases.png"><br><br>
+</td>
+<td><h1><u><ol start="19"><li>Les crashs pour défaut d'unicité et les méthodes pour les éviter</u></h1></td>
+<td><h2>
+Deux situations de défaut d'unicité dans ce programme (il en existe d'autres) :<br>
+<ul>
+<li>Unicité appelée Bug+1, toutes les cases de la grille ne possèdant plus que un ou 2 chiffres candidats sans aucune méthode applicable (sauf pour une solution bien sûr, où toutes les cases n'ont plus qu'un seul chiffre candidat)</li>
+<li>Unicité appelée rectangle où les mêmes 2 chiffres apparaissent aux sommets d'un rectangle, dans 2 blocs qui se voient.</li>
+</ul>
+Voici 3 exemples de crash pour défaut d'unicité, 2 pour un défaut d'unicité rectangle, le dernier pour un défaut d'unicité bug+1 (pas de case à plus de 2 chiffres-candidats) :
+<br><br><img src="images/Aide/crash unicité rectangle.png"><br><br>
+<br><br><img src="images/Aide/crash unicité rectangle 2.png"><br><br>
+<br><br><img src="images/Aide/crash unicité bug+1.png"><br><br>
+Des techniques existent pour éviter ces 2 défauts d'unicité. Mais un défaut d'unicité évité doit conduire à une solution, sinon la grille est fausse. Même dans ce cas, il faut vérifier que le contraire de l'évitement ne conduit pas à une solution parasite, auquel cas la grille est encore fausse. C'est le cas de la grille Pétunia, qui est fausse pour défaut d'unicité.<br><br>
+De très nombreuses méthodes sont répertoriées sur internet, pour éviter un défaut d'unicité.
+9 d'entre elles sont implantées dans ce programme de sudoku :
+<ul><li><u>Unicité bug+1</u> Une seule case à 3 chiffres candidats, toutes les autres ayant un ou deux chiffres-candidats : éliminer le chiffre de cette case étant vu plusieurs fois (évitement crash unicité dit bug+1).</li>
+<li><u>Unicité solo</u> Dans 4 cases d'un rectangle dans 2 blocs, où 3 cases ont les mêmes 2 chiffres, la 4<sup>ème</sup> case ne peut contenir ces 2 chiffres (évitement crash unicité rectangle).</li>
+<li><u>Unicité5 dans rectangle</u> Dans 4 cases d'un rectangle dans 2 blocs, contenant 2 chiffres de base, supprimer le chiffre de 2 cases opposées, reliées en lien fort avec les 2 autres cases (évitement crash unicité rectangle).</li>
+<li><u>Unicité duo 2 dans rectangle</u></li>
+<li><u>Unicité trio 3 forme 1 dans rectangle</u></li>
+<li><u>Unicité trio 3 forme 2 dans rectangle</u></li>
+<li><u>Unicité 4 dans rectangle</u></li>
+<li><u>Unicité duo</u></li>
+<li>Unicité LT</li>
+</ul>
+Cette importante richesse de méthodes est source de nombreux résultats spectaculaires permettant de casser une grille très difficile. C'est aussi une source d'erreurs de programmation.<br><br>
+En cas de plantage dû à une méthode défaillante, le calcul ne se termine pas normalement, et le message sybillin suivant apparaît :<br>
+<u><b>Lancement du calcul automatique complet.</b></u> Dans ce cas, il faut resélectionner la grille et relancer le calcul.<br><br><br><br>
+Voici 5 exemples de défaut d'unicité évités :<br><br>
+<br><br><img src="images/Aide/Evitement unicité rectangle 1.png"><br><br>
+<br><br><br><br><br><br><br>
+<br><br><img src="images/Aide/Evitement rectangle n°2.png"><br><br>
+<br><br><img src="images/Aide/Evitement LT.png"><br><br>
+<br><br><img src="images/Aide/Evitement LT1.png"><br><br>
+<br><br><img src="images/Aide/Evitement LT5.png"><br><br>
+Malgré cela, il existe des cas où l'évitement doit êre corroboré, c'est-à-dire que l'un des chiffres d'une case du rectangle ne doit pas rendre une autre case du rectangle assujettie à un des 2 chiffres du rectangle :
+<br><br><img src="images/Aide/Défaut unicité non corroboré.png"><br><br>
+Cette question de la corroboration d'un évitement de défaut d'unicité est méconnue. Il existe quelques exemples de grilles publiées dans les journaux, qui se révèlent fausses pour défaut d'unicité, du fait de la non prise en compte de ce fait. La solution de ces grilles contient ainsi des rectangles complets à 2 chiffres, sans que cela ne soit reconnu.  
+<br><br>Il est prévu une implantation progressive de nouvelles méthodes évitant le défaut d'unicité. Il en existerait plus de 20, ce qui constitue une mine de résolution de grilles de sudoku.
+</td>
+<td><h1><u><ol start="20"><li>Le clavier virtuel</u></h1></td>
+<td><h2>
+Un clavier virtuel a été implanté dans le programme. Il est activé en cochant l'option "Activation du clavier virtuel" dans l'écran des Filtres et Options. <u>Attention</u>, il faut, après l'enregistrement de l'écran des filtres et options en cliquant sur l'icône <img src="images/exit.png" width="35" height="35">, sortir du programme puis le recharger, pour que l'option soit validée.  Ce clavier virtuel n'apparaît pleinement qu'en mode plein écran.<br><br>
+Quand on clique dans une des 2 zones de titre (titre de la grille ou de la nouvelle archive), un clavier virtuel apparaît à l'écran et on peut renseigner ces titres en cliquant sur des caractères de ce clavier virtuel.<br><br>
+Ce clavier est beaucoup plus riche qu'un clavier physique. Non seulement, on peut activer le mode majuscule en cliquant sur CapsLock, mais on peut choisir des caractères grecs, des notes de musique, des caractères informatiques, des caractères de business, émoticons, motifs de cartes à jouer, etc... Cette liste pourrait être enrichie par d'autres caractères  de différents pays : Chinois, Indien, Japonais, Arabe, Hébreu, etc...
+<br><br>En fin de saisie, il faut fermer la fenêtre du clavier virtuel en cliquant sur le ruban rouge intitulé "Exit clavier virtuel" en haut de cette fenêtre.
+<br><br>Ce clavier virtuel permet donc la saisie des caractères du nom d'une grille ou du nom d'une archive, avec des caractères exotiques, ce qui ne peut être le cas avec un clavier physique. Les noms ainsi créés sont donc identifiables de manière originale.
+<br><img src="images/Aide/clavier virtuel.png" width="700" height="400"><br><br>
+</td>
+<td><h1><u><ol start="21"><li>Utilisation des différents navigateurs</u></h1></td>
+<td><h2>
+Ce programme de résolution de grilles Sudoku fonctionne correctement avec les 2 navigateurs suivants : Firefox (Mozilla),  Chrome (Google).<br><br>
+Il fonctionne aussi avec les 2 navigateurs suivants : Opera (Norvégien) et Safari (Apple).<br><br>
+Il fonctionne même avec les 2 navigateurs Microsoft : Internet Explorer 11 et Edge. Ces 2 navigateurs supportent maintenant le Web Storage, qui est le nouveau moyen de stockage de données côté client, remplaçant les cookies de manière plus performante. Mais Internet Explorer 11 n'est plus supporté et remplacé par Edge.<br><br>
+Les cookies ne sont plus acceptés par les navigateurs Chrome et Opera. De même que les cadres ("frames") sont considérés comme obsolètes par la plupart des navigateurs.<br><br>
+En conséquence, les cookies et les cadres ("frames") ne sont pas utilisés par ce programme de sudoku, bien qu'acceptés avec restrictions par les 2 navigateurs de Microsoft.
+</td>
+<td><h1><u><ol start="22"><li>Limitations de l'utilisation de l'imprimante en couleur</u></h1></td>
+<td><h2>
+Il existe 2 limitations pour l'utilisation en couleur d'une imprimante :
+<ul>
+<li>Les fonds d'écran en couleur à imprimer sont difficilement accessibles par les navigateurs, afin d'épargner les cartouches des imprimantes. Seuls, les navigateurs Chrome et Edge acceptent d'imprimer les fonds d'écran.</li>
+<li>L'utilisation même de la couleur pour l'impression est également limitée.</li> 
+</ul>
+</td>
+<td><h1><u><ol start="23"><li>Messages d'erreurs</u></h1></td>
+<td><h2>
+Les dysfonctionnements identifiés et corrigés sont indiqués par un message sous la grille commençant par l'alerte <u><b>Attention</b></u>. Leur liste, incomplète, est la suivante :
+<ul>
+<li><u>calcul impossible car déjà effectué ou crash en cours ou solution immédiate en cours</u>. Pas de calcul sur une solution de grille</li>
+<li><u>calcul impossible car il faut un minimum de 17 cases initialisées</u></li>
+<li><u>calcul interdit en cours de saisie de nouvelle grille : sauvegarder la grille avant de la calculer</u></li>
+<li><u>calcul trop long</u>. Butée si le nombre d'hypothèses de calcul est trop élevé</li>
+<li><u>double clic gauche intempestif</u>. Clic gauche trop long sur une icône, déclenchant une répétition intempestive de l'action</li>
+<li><u>impossible d'effacer des grilles dans une des 4 archives de bsae</u>. Tentative interdite d'effacement d'une grille dans une des 4 archives de base</li>
+<li><u>impossible de sélectionner un chiffre éliminé par l'opération manuelle précédente</u></li>
+<li><u>la case ne contenant plus que 2 chiffres, sélectionner un chiffre au lieu d'invalider l'autre</u></li>
+<li><u>méthode dont les variantes ne sont pas activées</u>. Pour sélectionner une variante particulière d'une méthode, il faut avoir sélectionné auparavant cette méthode, et qu'elle ait donné des résultats</li>
+<li><u>pas d'annulation action manuelle s'il s'agit de la grille initiale</u></li>
+<li><u>pas d'hypothèse à corriger sur étape initiale</u></li>
+<li><u>pas de retour possible aux 4 archives de base (éliminant toutes les autres archives); cocher la case des options correspondante pour activer cette fonction</u></li>
+<li><u>pas de validation de variante si une variante n'est pas sélectionnée</u></li>
+<li><u>pas de variante</u>. Il n'existe pas de variante de la méthode sélectionnée</li>
+<li>Cas d'interdiction de calcul intempestifs. Il est nécessaire de recharger la grille en cours pour pouvoir exécuter un calcul</li>
+<li>Grille générée fausse pour défaut d'unicité, soit pour une deuxième solution, soit pour un défaut bug+1 direct. Il est possible de modifier cette grille pour la rendre soluble, en renseignant de nouvelles cases, en particulier celles qui sont concernées par un défaut d'unicité</li>
+<li><u>impossible d'éliminer un chiffre déjà éliminé par l'opération manuelle précédente</u></li>
+<li><u>impossible de sélectionner un chiffre éliminé par l'opération manuelle précédente</u></li>
+<li><u>Calcul interdit après un calcul; sélectionner la grille à calculer au préalable</u></li>
+<li><u>Calcul interdit après la sélection d'une méthode; sélectionner la grille à calculer au préalable</u></li>
+<li><u>Calcul interdit après la génération d'une grille; sélectionner la grille à calculer au préalable</u></li> 
+</ul>
+Cette liste des messages est non exhaustive, et sera augmentée, en fonction des erreurs qui ne manqueront pas d'apparaître lors d'une utilisation intensive de ce programme de sudoku.
+La chasse aux erreurs de programmation informatiques (bugs), est une fonction nécessaire pour des programmes lourds comme celui-là.
+Un outil de développement existe dans ce programme pour faciliter cette recherche : à condition de cocher l'option dans l'écran des filtres et options, une icône supplémentaire <img src="images/doigt-main.png" width="35" height="35"> est ajoutée aux icônes principales pour tester des bouts de code externes.
+</td>
+<td><h1><u><ol start="24"><li>Bugs occasionnels identifiés et non résolus avec recherche de palliatifs</u></h1></td>
+<td><h2>
+Si une erreur est constatée et non corrigée, il faut se résoudre à utiliser un palliatif.
+<br><br>3 bugs occasionnels ont été constatés, sans qu'un solution ou une correction n'ait été encors trouvée : 
+<ul>
+<li>Après l'exécution d'un calcul d'une grille par ordinateur, il est parfois constaté que la première étape de calcul fait appel à une hypothèse, alors qu'il existe au moins une méthodes applicable. Dans ce cas, <u>le palliatif</u> consiste à resélectionner cette grille et à relancer le calcul.</li>
+<li>Si on sélectionne toutes les variantes d'une grille (pour une méthode donnée, ou pour toutes les méthodes applicables), puis si on sélectionne ensuite une variante particulière de cette liste, le retour à toutes les variantes se fait mal. Comme <u>palliatif</u>, il faut resélectionner l'icône de l'ensemble des variantes <img src="images/Variantes.png" width="35" height="35"> en haut de l'écran, avant de sélectionner une méthode particulière.</li>
+<li>Sur téléphone portable, l'appui sur une case de la grille est parfois défectueux car, au lieu de faire  apparaître le tableau interne de la case, rien ne se passe. <u>Le palliatif</u> consiste alors à appuyer sur une autre case, avant de réappuyer sur la case en question.</li>
+</ul>
+<br><br>Il existe certainement d'autres bugs, à identifier et, soit à corriger, soit à en trouver un palliatif.
+<br><br>2 cas incertains ont été constatés :
+<ul>
+<li>Si l'application d'une méthode fait apparaître une solution erronée, une correction est nécessaire. C'est le cas de certaines méthodes pour éviter des défauts d'unicité. <u>Le palliatif</u> est de considérer que la grille générant ce type d'erreur est fausse !</li>
+<li>Si un plantage occasionnel intervient et qu'il persiste, <u>le palliatif</u> consiste alors à réinitialiser le programme en ne conservant que les 4 archives de base (cf ci-dessus). Pour l'instant, il n'existe plus de plantage connu, tous ceux étant apparus ayant été corrigés. Mais cela ne veut pas dire qu'il n'en apparaîtra pas; dans ce cas, il faut donc réinitialiser en revenant aux 4 archives de base.</li>
+</ul>
+<br><br>Il est fait appel à la sagacité de développeurs, qui ont accès au code source (programme en open source), pour résoudre ces bugs.<br><br>
+La difficulté est que ces bugs n'apparaissent souvent que de manière occasionnelle et aléatoire.<br><br>
+Pour résoudre ces bugs, il faut donc avoir conservé une trace de la grille qui a occasionné un de ces bugs, pour relancer la procédure qui a occasionné ce bug, afin de le reproduire, pour essayer de la résoudre.
+<br><br><u>Il s'agit là d'un vaste domaine d'étude, très fécond : celui des bugs identifiés non résolus, dont il faut trouver un palliatif.</u>
+<br><br>La résolution d'un dysfonctionnement, ou bug, s'effectue en 3 étapes :
+<ul>
+<li>Apparition d'un dysfonctionnement</li>
+<li>Identification de l'origine de ce dysfonctionnement par encadrements successifs d'écritures autour de cette origine, pour la localiser</li>
+<li>Correction de ce dysfonctionnement</li>
+</ul>
+<u>Avantage du palliatif</u> : S'il est facile à réaliser, cela évite de se casser la tête pour résoudre le bug !
+<br><br><u><b>La chasse aux bugs des méthodes de résolution, pour impossibilité ou défaut d'unicité</b></u>
+<br><br>Une manière d'identifier des bugs de méthodes de résolution, est de résoudre une grille, puis, connaissant ce résultat, de lancer un calcul de toutes les méthodes applicables, que ce soit sur la grille de départ, ou même sur la grille à une étape de son calcul.
+<br><br>Si, parmi les chiffres rouges apparaissant à l'issue de ce calcul de toutes les méthodes applicables, il en est qui font partie de la solution, c'est qu'il y a un bug sur une de ces méthodes.
+<br><br>Il faut alors balayer l'ensemble des méthodes de la liste, pour identifier celle ayant engendré ce bug. Il ne reste plus alors qu'à résoudre ce bug sur un cas concret.
+<br><br>C'est ainsi qu'un bug de la méthode Squirmbag a été identifié sur la grille Erable, et a pu  être résolu : le chiffre rouge d'une case était erroné, parmi les 5 lignes du Squirmbag, car, en le sélectionnant, il ne reste plus que 4 colonnes qui constituent un groupe fermé, donc correct ! Donc, pas d'erreur; la méthode Squirmbag n'est pas applicable dans ce cas concret.
+<br><br><br>Une résolution avec contraintes a été implantée, mais sa résolution complète n'étant pas terminée, cette partie de programme a été suspendue pour l'instant.
+<br><br>De plus, au fur et à mesure de la mise au point de ce logiciel de sudoku, de nombreuses erreurs sont apparues et ont été corrigées. Mais le nettoyage de ces erreurs devenues obsolètes est à faire, ainsi que, aussi, le nettoyage du code, pour le rendre DRY (Don't Repeat Yourself).
+<br><br>Enfin, les images de ce programme d'Aide ont évolué, et certaines sont à actualiser, la présentation ayant évolué. Là aussi, un gros travail de nettoyage reste à faire.
+<br><br>Car ce programme de sudoku sur internet comporte environ 25000 lignes de code, et a nécessité 10 ans de travaux. Sa structure est maintenant opérationnelle, et peut servir de modèle pour la réalisation d'applications sur internet, ce qui constitue un vaste domaine.
+</td>
+<td><h1><u><ol start="25"><li>Liste des méthodes implantées dans ce programme de sudoku avec exemples</u></h1></td>
+<td><h2>
+La liste numérotée des méthodes implantées est la suivante :<br>
+<ul>
+<li>34-  Toutes les méthodes applicables</li>
+<li> 1-  Singleton nu (case à un seul chiffre)</li>
+<li> 2-  Solo</li>
+<li> 3-  Jumeaux</li>
+<li> 4-  Duo ou Trio</li>
+<li> 5-  Triples</li>
+<li> 6-  Quadruples</li>
+<li> 7-  Jumeaux Isolés</li>
+<li> 8-  Triples isolés</li>
+<li> 9-  Gratte-ciel</li>
+<li>10-  Boucle</li>
+<li>11-  L'attaque du cobra</li>
+<li>12-  Sue de Coq (L'arme et la soie)</li>
+<li>13-  W-Wing (L'aile de l'aigle)</li>
+<li>14-  Rectangle vide</li>
+<li>15-  2-String Kite (Cerf-volant)</li>
+<li>16-  Turbot fish</li>
+<li>17-  X-Chain (Color trap)</li>
+<li>18-  XY-Wing (L'aigle et sa proie)</li>
+<li>19-  Swordfish (l'espadon)</li>
+<li>20-  Forteresse maxilien</li>
+<li>21-  X-wing et Finned X-wing</li>
+<li>22-  XY-Chain (La griffe du tigre)</li>
+<li>23-  A.I.C.-Chain (l'approche du tigre)</li>
+<li>24-  Death Blossom</li>
+<li>25-  ALS-XY-Wing</li>
+<li>26-  Jellyfish</li>
+<li>27-  Squirmbag</li>
+<li>28-  3D Medusa</li>
+<li>29-  Nishio</li>
+<li>30-  Y-Wing</li>
+<li>31-  Chaînage ALS</li>
+<li>32-  Crash unicité</li>
+<li> 0-  Crash impossibilité</li>
+</ul>
+Dans cette liste, les rubriques 0, 31, 32, 33 et 34 sont particulières :
+<ul>
+<li>La rubrique 0 concerne les crashs pour impossibilité, au nombre de 5</li>
+<li>La rubrique 31 concerne une méthode lourde, le chaînage ALS, qui est parfois très longue. Il est alors nécessaire de réduire son utilisation en diminuant le nombre de calculs de cette méthode dans l'écran des filtres et options.</li>
+<li>La rubrique 32 concerne les méthodes permettant d'éviter un crash pour défaut d'unicité. Il en existe 8 dans ce programme de sudoku. De nombreuses autres méthodes d'évitement de crash unicité seront implantées ultérieurement.</li>
+<li>La rubrique 33 concerne les crashs pour défaut d'unicité, au nombre de 2 : bug + 1, rectangle.</li>
+<li>La rubrique 34, en première ligne, ne fait pas partie des méthodes. Elle permet, en la sélectionnant, de calculer, pour la grille en cours, l'ensemble des méthodes applicables, c'est-à-dire permettant la suppression de chiffres candidats, avec leurs nombre de variantes. Ceci est indiqué dans la liste des messages sous la grille.</li>
+</ul>
+Des exemples sont présentés ci--après, dans une liste non exhaustive, certaines méthodes présentant un grand nombre de variétés, comme les chaînes du tigre, le chaînage ALS ou les chaînes 3D Medusa.
+<br><br><img src="images/Aide/Singleton nu.png"><br><br>
+<br><br><img src="images/Aide/solo.png"><br><br>
+<br><br><img src="images/Aide/jumeaux.png"><br><br>
+<br><br><img src="images/Aide/Duo.png"><br><br>
+<br><br><img src="images/Aide/Trio.png"><br><br>
+<br><br><img src="images/Aide/Triples.png"><br><br>
+<br><br><img src="images/Aide/Quadruples.png"><br><br>
+<br><br><img src="images/Aide/Jumeaux isolés.png"><br><br>
+<br><br><img src="images/Aide/Triples isolés.png"><br><br>
+<br><br><img src="images/Aide/Gratte ciel.png"><br><br>
+<br><br><img src="images/Aide/Remote pair-1.png"><br><br>
+<br><br><img src="images/Aide/Remote pair.png"><br><br>
+<br><br><img src="images/Aide/turbot fish.png"><br><br>
+<br><br><img src="images/Aide/sue de coq.png"><br><br>
+<br><br><img src="images/Aide/sue decoq exemple.png"><br><br>
+<br><br><img src="images/Aide/Cerf volant.png"><br><br>
+<br><br><img src="images/Aide/w wing.png"><br><br>
+<br><br><img src="images/Aide/rectangle vide.png"><br><br>
+<br><br><img src="images/Aide/X-Chain (Color Trap).png"><br><br>
+<br><br><img src="images/Aide/X-Chain Color Cycle).png"><br><br>
+<br><br><img src="images/Aide/XY-Wing.png"><br><br>
+<br><br><img src="images/Aide/XY-Wing3.png"><br><br>
+<br><br><img src="images/Aide/L'attaque du cobra explication.png" height="1700">
+<br><br><img src="images/Aide/L'attaque du cobra.png" width="800" height="1700">
+<br><br><img src="images/Aide/swordfish vertical.png"><br><br>
+<br><br><img src="images/Aide/swordfih horizontal.png"><br><br>
+<br><br><img src="images/Aide/Forteresse maxilien.png"><br><br>
+<br><br><img src="images/Aide/Franken X-Wing.png"><br><br>
+<br><br><img src="images/Aide/sashimi double finned xwing.png"><br><br>
+<br><br><img src="images/Aide/XY-Chain 1.png"><br><br>
+<br><br><img src="images/Aide/XY-Chain (la griffe du tigre).png"><br><br>
+<br><br><img src="images/Aide/XY-Chain (la griffe du tigre) Exemple.png"><br><br>
+<br><br><img src="images/Aide/XY-Chain bis.png"><br><br>
+<!--
+<br><br><img src="images/Aide/XY-Chain sans détails.png"><br><br>
+<br><br><img src="images/Aide/AIC Type I.png" width="800" height="700"><img src="images/Aide/AIC Type I bis.png" width="1100" height="400"><img src="images/Aide/AIC Type I ter.png" width="1100" height="400"><img src="images/Aide/AIC Type I quater.png" width="1100" height="400"><img src="images/Aide/AIC Type I quinque.png" width="1100" height="400"><img src="images/Aide/AIC Type I sixte.png" width="1100" height="300"><br><br>
+-->
+<br><br><img src="images/Aide/AIC Type I exemple.png"><br><br>
+<br><br><img src="images/Aide/AIC Type I exemple3.png"><br><br>
+<br><br><img src="images/Aide/AIC Type I exemple4.png"><br><br>
+<br><br><u><b>Grille fausse </b></u><br><br><img src="images/Aide/AIC Type I grille fausse.png" width="800" height="1700">
+<br><br><img src="images/Aide/AIC Type II Exemple.png"><br><br>
+<br><br><img src="images/Aide/AIC Type II Exemple2.png"><br><br>
+<br><br><img src="images/Aide/AIC loop continue.png"><br><br>
+<br><br><img src="images/Aide/AIC loop abricotier.png"><br><br>
+<br><br><img src="images/Aide/AIC loop abricotier bis.png"><br><br>
+<br><br><img src="images/Aide/AIC loop continue Exemple.png"><br><br>
+<br><br><img src="images/Aide/AIC loop continue Exemple bis.png"><br><br>
+<br><br><img src="images/Aide/AIC loop continue Exemple2.png"><br><br>
+<br><br><img src="images/Aide/AIC loop discontinu Exemple.png"><br><br>
+<br><br><img src="images/Aide/AIC loop discontinu.png"><br><br>
+<br><br><img src="images/Aide/death blossom2.png"><br><br>
+<br><br><img src="images/Aide/death blossom.png"><br><br>
+<br><br><img src="images/Aide/ALS-XY-WING.png"><br><br>
+<br><br><img src="images/Aide/ALS-XY-WING Exemple.png"><br><br>
+<br><br><img src="images/Aide/Jellyfish.png"><br><br>
+<br><br><img src="images/Aide/Jellyfish2.png"><br><br>
+<br><br><img src="images/Aide/squirmbag.png"><br><br>
+<br><br><img src="images/Aide/3D Medusa sees two different colors.png"><br><br>
+<br><br><img src="images/Aide/3D Medusa emptying a cell.png"><br><br>
+<br><br><img src="images/Aide/3D Medusa twice in a unit.png"><br><br>
+<br><br><img src="images/Aide/3D Medusa unit cell elimination.png"><br><br>
+<br><br><img src="images/Aide/3D Medusa two colors in a cell.png"><br><br>
+<br><br><img src="images/Aide/Nishio.png"><br><br>
+<br><br><img src="images/Aide/Y-Wing.png"><br><br>
+<br><br><img src="images/Aide/ALS-Chain continu exemple 2.png"><br><br>
+<br><br><img src="images/Aide/ALS-Chain inachevé bis.png"><br><br>
+<br><br><img src="images/Aide/ALS-Chain continu exemple.png"><br><br>
+<br><br><img src="images/Aide/ALS-Chain inachevé bis.png"><br><br>
+<br><br><img src="images/Aide/ALS-Chain discontinu exemple.png"><br><br>
+<br><br><img src="images/Aide/ALS-Chain discontinu exemple bis.png"><br><br>
+<br><br><img src="images/Aide/ALS-Chain abricotier C2.png"><br><br>
+<br><br><img src="images/Aide/ALS-Chain abricotier I4.png"><br><br>
+<br><br><img src="images/Aide/ALS-Chain abricotier C8.png"><br><br>
+<br><br><img src="images/Aide/ALS-Chain abricotier E8.png"><br><br>
+<br><br><img src="images/Aide/ALS-Chain abricotier C9.png"><br><br>
+<br><br><img src="images/Aide/Evitement unicité rectangle 2.png"><br><br>
+<br><br><img src="images/Aide/La griffe du tigre.png"><br><br>
+<br><br><img src="images/Aide/La griffe du tigre commentaires.png"><br><br>
+<h2>Voici un exemple en 7 phases illustrant l'emploi du programme :<br><br>
+<h2>Exemple de grille avec tableau interne de la case A1 survolée par la souris<br></h2><img src="images/Aide/tableau1.png"><br><br>
+<h2>Puis même grille après clic gauche sur le chiffre 7 de ce tableau interne<br></h2><img src="images/Aide/post tableau1.png"><br><br>
+<br><br><br><br> 
+<br><br><br><br> 
+<h2>Puis même grille avec tableau interne de la case B2 survolée par la souris<br></h2><img src="images/Aide/tableau2.png"><br><br>
+<br><br><h2>Puis même grille après clic droit sur le chiffre 3 de ce tableau interne<br></h2><img src="images/Aide/post tableau2.png"><br><br>
+<br><br><br><br> 
+<br><br><br><br> 
+<h2>Puis même grille avec tableau interne de la case D7 survolée par la souris<br></h2><img src="images/Aide/tableau3.png"><br><br>
+<h2>Puis même grille après clic gauche sur le chiffre 4 de ce tableau interne<br></h2><img src="images/Aide/post tableau3.png"><br><br>
+<br><br><br><br> 
+<br><br><br><br> 
+<h2>Puis même grille après clic gauche sur le chiffre 1 du tableau interne de la case B1 (pas d'affichage de ce tableau interne)<br></h2><img src="images/Aide/post tableau4.png">
+<h3><u>Exemple de grille rendue erronée par la dernière opération manuelle avec la case C4 devenue vide</u><br><br><img src="images/Aide/Case vide.png"><br><br>
+<h3><u>Exemple de grille initiale</u><br><br><img src="images/Aide/Ylang1.png"><br><br>
+<h3><u>Exemple de cette grille à une étape intermédiaire</u><br><br><img src="images/Aide/Ylang2.png"><br><br><br><br><br><br>
+<h3><u>Exemple de cette grille avec sa solution finale</u><br><br><img src="images/Aide/Ylang3.png"><br><br>
+</td></tr>
+</table>
+</div>
+<div id="Claviervirtuel">
+<table id="clavier_virtuel">
+<caption onclick="horsvkb()">Exit clavier virtuel</caption>
+<tr>
+<td onclick="press('²', true)">²</td>
+<td onclick="press('&', true)">&#038;</td>
+<td onclick="press('é', true)">é</td>
+<td onclick="press(quote2, false)">"#</td>
+<td onclick="press('\'', false)">'{</td>
+<td onclick="press('(', false)">([</td>
+<td onclick="press('-', false)">-|</td>
+<td onclick="press('è', true)">è</td>
+<td onclick="press('_', false)">_\</td>
+<td onclick="press('ç', true)">ç</td>
+<td onclick="press('à', false)">à@</td>
+<td onclick="press(')', false)">)]</td>
+<td onclick="press('=', false)">=}</td>
+<td class="dead"></td>
+<td onclick="backslash();" colspan="2">Delete</td>
+<td class="dead"></td>
+<!--<td class="dead"><span id="CapsLock">-</span></td>-->
+<td onclick="press('/', true)">/</td>
+<td onclick="press('*', true)">*</td>
+<td onclick="press('-', true)" colspan="1">-</td>
+</tr>
+<tr>
+<td onclick="press('\t')" colspan="2">tab</td>
+<td onclick="press('a', true)">a</td>
+<td onclick="press('z', true)">z</td>
+<td onclick="press('e', true)">e</td>
+<td onclick="press('r', true)">r</td>
+<td onclick="press('t', true)">t</td>
+<td onclick="press('y', true)">y</td>
+<td onclick="press('u', true)">u</td>
+<td onclick="press('i', true)">i</td>
+<td onclick="press('o', true)">o</td>
+<td onclick="press('p', true)">p</td>
+<td class="dead"></td>
+<td onclick="press('$', false)">$£</td>
+<td colspan="2" rowspan="2" onclick="press('\n', true)">Enter</td>
+<td onclick="press('7', true)">7</td>
+<td onclick="press('8', true)">8</td>
+<td onclick="press('9', true)">9</td>
+<td onclick="press('+', true)" rowspan="2" colspan="1">+</td>
+</tr>
+<tr>
+<td onclick="capslock();" colspan="2">CapsLock</td>
+<td onclick="press('q', true)">q</td>
+<td onclick="press('s', true)">s</td>
+<td onclick="press('d', true)">d</td>
+<td onclick="press('f', true)">f</td>
+<td onclick="press('g', true)">g</td>
+<td onclick="press('h', true)">h</td>
+<td onclick="press('j', true)">j</td>
+<td onclick="press('k', true)">k</td>
+<td onclick="press('l', true)">l</td>
+<td onclick="press('m', true)">m</td>
+<td onclick="press('ù', false)">ù%</td>
+<td onclick="press('*', false)">*µ</td>
+<td onclick="press('4', true)">4</td>
+<td onclick="press('5', true)">5</td>
+<td onclick="press('6', true)">6</td>
+</tr>
+<tr>
+<td class="dead"></td>
+<td onclick="press('<', false)">&gt;&lt;</td>
+<td onclick="press('w', true)">w</td>
+<td onclick="press('x', true)">x</td>
+<td onclick="press('c', true)">c</td>
+<td onclick="press('v', true)">v</td>
+<td onclick="press('b', true)">b</td>
+<td onclick="press('n', true)">n</td>
+<td onclick="press(',', false)">,?</td>
+<td onclick="press(';', false)">;.</td>
+<td onclick="press(':', false)">:/</td>
+<td onclick="press('!', false)">!§</td>
+<td onclick="press('&#156', true)">&#156</td>
+<td onclick="press('°', true)">°</td>
+<td colspan="2" class="dead"></td>
+<td onclick="press('1', true)">1</td>
+<td onclick="press('2', true)">2</td>
+<td onclick="press('3', true)">3</td>
+<td class="dead"></td>
+</tr>
+<tr>
+<td colspan="4" class="dead"></td>
+<td onclick="press(' ',true)" colspan="6">&#160;</td>
+<td colspan="6" class="dead"></td>
+<td onclick="press('0', true)" colspan="2">0</td>
+<td onclick="press('.', true)">.</td>
+<td class="dead"></td>
+</tr>
+<tr>
+<td colspan="2" class="dead"></td>
+<td onclick="press('&#228', true)">&#228</td>
+<td onclick="press('&#235', true)">&#235</td>
+<td onclick="press('&#239', true)">&#239</td>
+<td onclick="press('&#245', true)">&#245</td>
+<td onclick="press('&#252', true)">&#252</td>
+<td colspan="2" class="dead"></td>
+<td onclick="press('&#226', true)">&#226</td>
+<td onclick="press('&#234', true)">&#234</td>
+<td onclick="press('&#238', true)">&#238</td>
+<td onclick="press('&#244', true)">&#244</td>
+<td onclick="press('&#251', true)">&#251</td>
+<td colspan="8" class="dead"></td>
+</tr>
+<tr>
+<td class="dead"></td>
+<td onclick="press('&#945', true)">&#945</td>
+<td onclick="press('&#946', true)">&#946</td>
+<td onclick="press('&#947', true)">&#947</td>
+<td onclick="press('&#948', true)">&#948</td>
+<td onclick="press('&#949', true)">&#949</td>
+<td onclick="press('&#950', true)">&#950</td>
+<td onclick="press('&#951', true)">&#951</td>
+<td onclick="press('&#952', true)">&#952</td>
+<td onclick="press('&#953', true)">&#953</td>
+<td onclick="press('&#954', true)">&#954</td>
+<td onclick="press('&#955', true)">&#955</td><!-lambda-->
+<td onclick="press('&#956', true)">&#956</td>
+<td onclick="press('&#957', true)">&#957</td>
+<td onclick="press('&#958', true)">&#958</td><!--xi-->
+<td onclick="press('&#959', true)">&#959</td>
+<td onclick="press('&#960', true)">&#960</td>
+<td onclick="press('&#961', true)">&#961</td>
+<td onclick="press('&#963', true)">&#963</td>
+<td onclick="press('&#964', true)">&#964</td>
+</tr>
+<tr>
+<td class="dead"></td>
+<td onclick="press('&#965', true)">&#965</td>
+<td onclick="press('&#966', true)">&#966</td>
+<td onclick="press('&#967', true)">&#967</td>
+<td onclick="press('&#968', true)">&#968</td>
+<td onclick="press('&#969', true)">&#969</td>
+<td colspan="1" class="dead"></td>
+<td onclick="press('€', true)">€</td>
+<td onclick="press('&#162', true)">&#162</td>
+<td onclick="press('&#165', true)">&#165</td>
+<td onclick="press('&#164', true)">&#164</td>
+<td colspan="1" class="dead"></td>
+<td onclick="press('&#9824', true)">&#9824</td>
+<td onclick="press('&#9827', true)">&#9827</td>
+<td onclick="press('&#9829', true)">&#9829</td>
+<td onclick="press('&#9830', true)">&#9830</td>
+<td colspan="1" class="dead"></td>
+<td onclick="press('&#153', true)">&#153</td>
+<td onclick="press('&#169', true)">&#169</td>
+<td onclick="press('&#174', true)">&#174</td>
+</tr>
+<tr>
+<td class="dead"></td>
+<td onclick="press('&#9794', true)">&#9794</td>
+<td onclick="press('&#9792', true)">&#9792</td>
+<td colspan="5" class="dead"></td>
+<td onclick="press('&#9834', true)">&#9834</td>
+<td onclick="press('&#9835', true)">&#9835</td>
+<td colspan="2" class="dead"></td>
+<td onclick="press('&#9788', true)">&#9788</td>
+<td onclick="press('&#9786', true)">&#9786</td>
+<td onclick="press('&#9787', true)">&#9787</td>
+<td colspan="9" class="dead"></td>
+</tr>
+</table>
+</div>
+</body>
+</html>
+
