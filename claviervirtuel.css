@@ -1,0 +1,40 @@
+caption {
+		background-color:red;
+		color:white;
+}
+
+body{
+	background-color:white;
+	border:0px !important;
+}
+
+#clavier_virtuel{
+	background-color:yellow;
+    left=200px;
+	top:200px
+}
+
+#clavier_virtuel{
+	border: 1px solid;
+	-moz-border-radius: 1px;
+	position:relative;
+	top:20px
+	background-color:white;
+}
+
+#clavier_virtuel td{
+	background-color:yellow;
+	font-size:20px;
+	border: 1px outset;
+	width:20px;
+	-moz-border-radius: 1px;
+}
+.dead{
+	//background-color:transparent !important;
+	border:0px !important;
+}
+#clavier_virtuel td:focus{
+	border: 1px inset;
+}
+
+#Claviervirtuel{left:800px; top:30px; height:30px}

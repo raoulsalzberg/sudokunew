@@ -1,0 +1,32 @@
+#Message {
+        font-size:x-large;
+        font-weight:bold;
+//        width:150vw;
+        width:165%;margin:0; padding:0;
+}
+  
+  body {
+    position:relative;
+   }
+   
+@media print{
+  body {
+    -webkit-print-color-adjust: exact;
+   }
+  .jaune {
+    background-color: #FFFF80 !important;// jaune
+  }
+ .couleur {
+    background-color :#80FFFF !important;// bleu         
+  }
+         #Lcontrainte {page-break-before:always; }
+}
+
+  .autrescouches{
+                 z-index:100;
+                 opacity:2;
+//                 display:block;
+//                 width:100%;
+//                 position:fixed;
+  }
+  

@@ -1,0 +1,127 @@
+    #stars  {position: absolute; top:10%; width:100%; z-index:0; opacity:0}
+    #starsmanuel  {position: absolute; top:10%; width:100%; z-index:2; opacity:2}
+    #Diagramme {position: absolute; top:35%; width:60%; z-index:2; opacity:2} 
+    #Message {position:relative; width:160%; z-index:2; opacity:2}
+    .couches {position: absolute; top:105%; width:120%; z-index:0; opacity:0}       
+    #Claviervirtuel {position: absolute; top:20%; left:10%;  width:50%; z-index:0; opacity:0}
+    .Titre {position: relative;}
+#starsmanuel a.info {
+   color: black;
+   text-decoration: none;
+}
+
+#starsmanuel a.info img {
+    background-color: white; 
+    color: black; 
+    border: 2px solid #555555;
+    width:6%;
+}
+
+#starsmanuel a.info img:hover {
+    background-color: yellow;
+    color: white;
+    width:7%;
+}
+
+#stars a.info {
+   color: black;
+   text-decoration: none;
+}
+
+#stars a.info img {
+    background-color: white; 
+    color: black; 
+    border: 2px solid #555555;
+    width:6%;
+}
+
+#stars a.info img:hover {
+    background-color: yellow;
+    color: white;
+    width:7%;
+}
+
+input.check1 {
+    width:30px;
+    height:30px;
+}
+
+#Diagramme td, h3, th {
+        height:50px;
+//        width:100px;
+        font-size:xx-large;
+        font-weight:bold;
+}
+
+#Diagramme a.infodiag {
+   color: black;
+   text-decoration: none;
+}
+ 
+#Diagramme table {
+    border-collapse: collapse;
+    width:100%;
+}
+
+#Aide { 
+   z-index:0; 
+   opacity:0;   
+}
+
+.img {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 1px 1px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 1px 1px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+    width:6%;
+}
+
+#Aide a.info img {
+    width:5%;
+}
+
+a.info span {
+   display: none; /* on masque l'infobulle */
+}
+a.info:hover {
+   background: none; /* correction d'un bug IE */
+   z-index: 5; 
+   cursor: help; /* on change le curseur par defaut en curseur d'aide */
+}
+a.info:hover span {
+   display: inline; /* on affiche l'infobulle */
+   white-space: nowrap; /* on change la valeur de la propriete white-space pour qu'il n'y ait pas de retour la ligne non-desire */
+   background: yellow;
+   color: green;
+   border: 1px solid green;
+   border-left: 1px solid green;
+   font-weight:bolder;
+   padding:1%;
+   position: absolute;
+   top:0%;
+   left:0%;
+   height:5px;
+}
+a.infogrille img {
+   width:10%;
+//   position:relative;
+}
+
+a.infogrille img:hover {
+    background-color: yellow;
+    color: white;
+    width:12%;
+   position: relative;
+   top:0%;
+   left:0%;
+}
+
+
+

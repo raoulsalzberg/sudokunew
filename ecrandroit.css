@@ -1,0 +1,144 @@
+a.infogrille {
+   position: relative;
+   color: black;
+   text-decoration: none;
+}
+
+
+a.infogrille span {
+   display: none; /* on masque l'infobulle */
+}
+a.infogrille:hover {
+   background: none; /* correction d'un bug IE */
+   z-index: 5; /* on definit une valeur pour l'ordre d'affichage */
+   cursor: help; /* on change le curseur par defaut en curseur d'aide */
+}
+
+a.infogrille:hover span {
+   display: inline; /* on affiche l'infobulle */
+   position: absolute;
+   white-space: nowrap; /* on change la valeur de la propriete white-space pour qu'il n'y ait pas de retour a la ligne non-desire */
+   top: 20%; /* on positionne notre infobulle */
+   left: 0%;
+   background: yellow;
+   color: green;
+   border: 1px solid green;
+   border-left: 1px solid green;
+   font-weight:bolder;
+   padding:1%;
+}
+
+#img13 {
+   width:15%;
+}
+
+.couches td, h3 {
+        font-size:x-large;
+        font-weight:bold;
+}
+
+#cars {
+        font-size:large;
+        font-weight:bold;
+        width:20%;
+}
+
+.img11 {
+    background-color: white; 
+    color: black; 
+    border: 2px solid #555555;
+}
+
+.img11:hover {
+    color: white;
+    border: 1px solid black;
+}
+
+#Lcontrainte { 
+   border: 4px #666 solid;
+   width: 100%;
+   background: yellow;
+}
+
+#Contraintes option {
+       font-size:large;
+       font-weight:bold;
+   background: yellow;
+}
+#Contraintes img {
+   width: 20%;
+}
+
+
+#Options select {
+        font-size:large;
+        font-weight:bold;
+}
+
+/*
+# select {
+        font-size:large;
+        font-weight:bold;
+}
+
+*/
+
+
+.Titreliste th {
+        font-size:xx-large;
+        font-weight:bold;
+}
+
+#Titrehyp {
+        font-size:xx-large;
+        font-weight:bold;
+}
+
+#Titrevar {
+        font-size:xx-large;
+        font-weight:bold;
+}
+
+#Titrestep {
+        font-size:xx-large;
+        font-weight:bold;
+}
+
+#Lili td th {// Grilles
+        font-size:xx-large;
+        font-weight:bold;
+}
+
+#Lolo td th {// Methodes
+        font-size:xx-large;
+        font-weight:bold;
+}
+#Lulu td th {// Etapes
+        font-size:xx-large;
+        font-weight:bold;
+}
+#Lzlz td th {// Variantes
+        font-size:xx-large;
+        font-weight:bold;
+}
+#Lwlw td th {// Variantes
+        font-size:xx-large;
+        font-weight:bold;
+}
+#1V  {width:10%}
+
+#Lyly td th {// Hypotheses
+        font-size:xx-large;
+        font-weight:bold;
+}
+#Lxlx td th {// Archives
+        font-size:xx-large;
+        font-weight:bold;
+}
+
+#Lblb td {// Contraintes
+        font-size:xx-large;
+        font-weight:bold;
+}
+
+
